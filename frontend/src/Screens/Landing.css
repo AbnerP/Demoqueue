@@ -1,0 +1,23 @@
+
+.container {
+    text-align: center;
+    margin: 0 auto;
+    color: white;
+    height: 100vh;
+    max-width: 40rem;
+}
+
+.title {
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+input[type=text], select {
+  width: 60%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
