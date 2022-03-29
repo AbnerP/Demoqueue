@@ -24,6 +24,12 @@
     
 }
 
+.currentlyPlaying__lockTimer{
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 @keyframes spin {
   0% {
@@ -36,13 +42,13 @@
 }
 .lockTimer{
     position:absolute;
-    top:2.5rem;
     right:0;
 
     text-align: center;
 
     width: 5rem;
 }
+
 .sessionCode{
     position: absolute;
     top: 1rem;

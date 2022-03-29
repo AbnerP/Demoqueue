@@ -31,8 +31,10 @@ function CurrentlyPlaying(props) {
         <h2>{props.name}</h2>
         <h3>{props.artist}</h3>
       </div>
-
-      <h4 className="lockTimer">Song Locks in {timeToLock}s</h4>
+      
+      <div className="currentlyPlaying__lockTimer">
+        <h4 className="lockTimer">Song Locks in {timeToLock}s</h4>
+      </div>
     </div>
   );
 }
