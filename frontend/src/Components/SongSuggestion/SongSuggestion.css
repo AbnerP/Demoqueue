@@ -1,0 +1,13 @@
+.song__card{
+    display: flex;
+    justify-content:space-between;
+    
+    border-bottom: 1px solid gray;
+    padding: 1rem;
+}
+
+.song__interactions{
+    display: flex;
+    justify-content: space-between;
+    width: 30vw;
+}
