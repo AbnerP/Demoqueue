@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
+import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
+import { sampleSongData } from "../Helpers/data";
+import sortAndReturn from "../Helpers/sort";
 import "./LiveQueue.css";
 
 function LiveQueue() {
-  const navigate = useNavigate();
-
-  const [currentSong, setCurrentSong] = useState({
-    name: " ",
-    artist: " ",
-    albumWorkURL: " ",
-  });
-
-  const [playbackStatus, setPlaybackStatus] = useState({
-    time: "",
-    total: "",
-  });
+  const [currentSong, setCurrentSong] = useState({});
+  const [songsInQueue, setSongsInQueue] = useState([]);
 
   useEffect(() => {
     setCurrentSong({
@@ -24,7 +16,39 @@ function LiveQueue() {
       albumWorkURL:
         "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
     });
+
+    for (let song of sampleSongData) {
+      addSongToQueue(song.name, song.artist);
+    }
   }, []);
+
+  const addSongToQueue = (name, artist) => {
+    let queueCopy = songsInQueue;
+
+    queueCopy.push({
+      name: name,
+      artist: artist,
+      votes: 0,
+    });
+
+    setSongsInQueue(sortAndReturn(queueCopy));
+  };
+
+  const upVote = (index) => {
+    let queueCopy = [...songsInQueue];
+
+    queueCopy[index].votes += 1;
+
+    setSongsInQueue(sortAndReturn(queueCopy));
+  };
+
+  const downVote = (index) => {
+    let queueCopy = [...songsInQueue];
+
+    queueCopy[index].votes -= 1;
+
+    setSongsInQueue(sortAndReturn(queueCopy));
+  };
 
   return (
     <div>
@@ -37,91 +61,17 @@ function LiveQueue() {
       </div>
 
       <div className="song__queue">
-        Laborum nisi nostrud elit ullamco excepteur minim dolore ut voluptate
-        deserunt occaecat. Do ea ut do deserunt culpa deserunt. Consequat ipsum
-        excepteur sit ut irure ut cillum minim esse excepteur. Sint exercitation
-        sunt dolor exercitation pariatur nisi aliqua veniam sint id ex minim.
-        Laboris ea veniam qui amet magna fugiat sint commodo consequat et
-        voluptate. Commodo aute tempor in nulla ullamco commodo voluptate culpa
-        in voluptate deserunt dolor. Est velit dolore culpa anim sit ad amet et
-        do sit. Pariatur fugiat ad eu dolor pariatur exercitation veniam
-        consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum. Laborum nisi nostrud elit ullamco excepteur minim dolore ut
-        voluptate deserunt occaecat. Do ea ut do deserunt culpa deserunt.
-        Consequat ipsum excepteur sit ut irure ut cillum minim esse excepteur.
-        Sint exercitation sunt dolor exercitation pariatur nisi aliqua veniam
-        sint id ex minim. Laboris ea veniam qui amet magna fugiat sint commodo
-        consequat et voluptate. Commodo aute tempor in nulla ullamco commodo
-        voluptate culpa in voluptate deserunt dolor. Est velit dolore culpa anim
-        sit ad amet et do sit. Pariatur fugiat ad eu dolor pariatur exercitation
-        veniam consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore
-        ipsum.
+        {songsInQueue.map((song, index) => (
+          <SongSuggestion
+            key={`${song.name} ${song.artist}`}
+            name={song.name}
+            artist={song.artist}
+            votes={song.votes}
+            index={index}
+            upVote={upVote}
+            downVote={downVote}
+          />
+        ))}
       </div>
 
       <div

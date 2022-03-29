@@ -3,8 +3,6 @@
     margin: 0;
     padding: 0;
 
-
-    /* position:block; */
     width: 100%;
     left: 0;
     top: 0;
@@ -34,7 +32,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
 }
 
 .song__request--text{
