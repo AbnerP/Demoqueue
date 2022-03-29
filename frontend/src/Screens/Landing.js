@@ -16,10 +16,10 @@ function LangdingPage() {
         }}
       >
         <input type="text" />
-        <button type="submit">Join Queue</button>
+        <button className="landingPage__button" type="submit">Join Queue</button>
       </form>
       <br /><h3> OR </h3><br />
-      <button onClick={() => navigate("/queue")}>Create Queue</button>
+      <button className="landingPage__button" onClick={() => navigate("/queue")}>Create Queue</button>
     </div>
   );
 }
