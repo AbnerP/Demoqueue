@@ -5,10 +5,34 @@
     border-bottom: 1px solid gray;
     padding: 1rem;
 }
+.song__votes{
+    margin-right: 1rem;
+
+}
+
+.song__votes--number{
+    font-size: 1.3rem;
+    font-weight:500;
+}
+
+.song__votes--text{
+    font-size: .8rem;
+}
 
 .song__interactions{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 30vw;
+}
+
+.votes__counter--container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.song__interactions--voting{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
