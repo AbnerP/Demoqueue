@@ -8,6 +8,7 @@ import "./LiveQueue.css";
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
+  const [isAdmin,setIsAdmin] = useState(true);
 
   useEffect(() => {
     setCurrentSong({
@@ -50,6 +51,14 @@ function LiveQueue() {
     setSongsInQueue(sortAndReturn(queueCopy));
   };
 
+  const deleteSuggestion = (index) =>{
+    let queueCopy = [...songsInQueue];
+
+    queueCopy.splice(index,1);
+
+    setSongsInQueue(queueCopy);
+  }
+
   return (
     <div>
       <div className="queue__header">
@@ -72,12 +81,14 @@ function LiveQueue() {
         {songsInQueue.map((song, index) => (
           <SongSuggestion
             key={`${song.name} ${song.artist}`}
+            isAdmin={isAdmin}
             name={song.name}
             artist={song.artist}
             votes={song.votes}
             index={index}
             upVote={upVote}
             downVote={downVote}
+            deleteSuggestion={deleteSuggestion}
           />
         ))}
       </div>
