@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
+import QueueOptions from "../Components/QueueOptions/QueueOptions";
 import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
 import { sampleSongData } from "../Helpers/data";
-import sortAndReturn from "../Helpers/sort";
+import sortAndReturnNumerically, {
+  sortAndReturnAlphabetically,
+} from "../Helpers/sort";
 import "./LiveQueue.css";
 
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
-  const [isAdmin,setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sortedByRank, setSortedByRank] = useState(true);
 
   useEffect(() => {
     setCurrentSong({
@@ -23,6 +27,18 @@ function LiveQueue() {
     }
   }, []);
 
+  useEffect(()=>{
+    sortQueue([...songsInQueue]);
+  },[sortedByRank]);
+
+  const sortQueue = (queue) => {
+    if(sortedByRank){
+      setSongsInQueue(sortAndReturnNumerically(queue));
+    }else{
+      setSongsInQueue(sortAndReturnAlphabetically(queue));
+    }
+  };
+
   const addSongToQueue = (name, artist) => {
     let queueCopy = songsInQueue;
 
@@ -31,32 +47,36 @@ function LiveQueue() {
       artist: artist,
       votes: 0,
     });
-
-    setSongsInQueue(sortAndReturn(queueCopy));
+    
+    sortQueue(queueCopy);
   };
 
-  const upVote = (index,switchVote) => {
+  const upVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
 
     queueCopy[index].votes += switchVote ? 2 : 1;
 
-    setSongsInQueue(sortAndReturn(queueCopy));
+    sortQueue(queueCopy);
   };
 
-  const downVote = (index,switchVote) => {
+  const downVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
 
     queueCopy[index].votes -= switchVote ? 2 : 1;
 
-    setSongsInQueue(sortAndReturn(queueCopy));
+    sortQueue(queueCopy);
   };
 
-  const deleteSuggestion = (index) =>{
+  const deleteSuggestion = (index) => {
     let queueCopy = [...songsInQueue];
 
-    queueCopy.splice(index,1);
+    queueCopy.splice(index, 1);
 
-    setSongsInQueue(queueCopy);
+    sortQueue(queueCopy);
+  };
+
+  const toggleSortType = () =>{
+    setSortedByRank(!sortedByRank);
   }
 
   return (
@@ -68,14 +88,8 @@ function LiveQueue() {
           albumWorkURL={currentSong.albumWorkURL}
         />
       </div>
-      <div
-        onClick={() => {
-          console.log("clicked: Request Song");
-        }}
-        className="song__request--container"
-      >
-        <p className="song__request--text">Request Song</p>
-      </div>
+
+      <QueueOptions sortedByRank={sortedByRank} toggleSortType={toggleSortType} />
 
       <div className="song__queue">
         {songsInQueue.map((song, index) => (
@@ -92,8 +106,6 @@ function LiveQueue() {
           />
         ))}
       </div>
-
-      
     </div>
   );
 }

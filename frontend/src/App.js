@@ -7,8 +7,8 @@ import LiveQueue from "./Screens/LiveQueue";
 import SessionCode from "./Screens/SessionCode";
 const theme = createTheme({
   palette:{
-    success: {
-      main:"#4BB543",
+    primary: {
+      main:"#4CAF50",
     }
   }
 });
