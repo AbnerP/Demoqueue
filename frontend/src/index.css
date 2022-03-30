@@ -1,7 +1,7 @@
 html{
     scroll-behavior: smooth;
-    /* background-color: #52527a; */
-    background-color: #ffffff;
+    background-color: #52527a;
+    color: white;
 }
 
 * {

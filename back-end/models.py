@@ -9,13 +9,10 @@ class Host(UserMixin, db.Model):
                          unique=True, index=True)
     password_hash = db.Column(db.String(128))
 
+
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
-
-    @property
-    def token_expired(self):
-        return False
 
     @password.setter
     def password(self, password):

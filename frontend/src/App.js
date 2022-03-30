@@ -5,6 +5,8 @@ import './App.css';
 import LangdingPage from "./Screens/Landing";
 import LiveQueue from "./Screens/LiveQueue";
 import SessionCode from "./Screens/SessionCode";
+import StartEvent from "./Screens/StartEvent";
+
 const theme = createTheme({
   palette:{
     primary: {
@@ -22,6 +24,7 @@ function App() {
           <Route path="/home" element={<LangdingPage />} />
           <Route path="/queue" element={<LiveQueue />} />
           <Route path="/code" element={<SessionCode />} />
+          <Route path="/start_event" element={<StartEvent />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
