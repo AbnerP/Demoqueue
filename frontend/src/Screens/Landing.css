@@ -2,7 +2,7 @@
 .container {
     text-align: center;
     margin: 0 auto;
-    color: white;
+    color: black;
     height: 100vh;
     max-width: 40rem;
 }
@@ -20,4 +20,19 @@ input[type=text], select, input[type=password] {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.landingPage__button{
+  width: 60%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.landingPage__button:hover {
+  background-color: #45a049;
 }

@@ -19,7 +19,7 @@ function LangdingPage() {
         <button type="submit">Join Queue</button>
       </form>
       <br /><h3> OR </h3><br />
-      <button onClick={() => navigate("/start_event")}>Create Queue</button>
+      <button className="landingPage__button" onClick={() => navigate("/start_event")}>Create Queue</button>
     </div>
   );
 }

@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
+import QueueOptions from "../Components/QueueOptions/QueueOptions";
+import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
+import { sampleSongData } from "../Helpers/data";
+import sortAndReturnNumerically, {
+  sortAndReturnAlphabetically,
+} from "../Helpers/sort";
 import "./LiveQueue.css";
 
 function LiveQueue() {
-  const navigate = useNavigate();
-
-  const [currentSong, setCurrentSong] = useState({
-    name: " ",
-    artist: " ",
-    albumWorkURL: " ",
-  });
-
-  const [playbackStatus, setPlaybackStatus] = useState({
-    time: "",
-    total: "",
-  });
+  const [currentSong, setCurrentSong] = useState({});
+  const [songsInQueue, setSongsInQueue] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sortedByRank, setSortedByRank] = useState(true);
 
   useEffect(() => {
     setCurrentSong({
@@ -24,7 +21,63 @@ function LiveQueue() {
       albumWorkURL:
         "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
     });
+
+    for (let song of sampleSongData) {
+      addSongToQueue(song.name, song.artist);
+    }
   }, []);
+
+  useEffect(()=>{
+    sortQueue([...songsInQueue]);
+  },[sortedByRank]);
+
+  const sortQueue = (queue) => {
+    if(sortedByRank){
+      setSongsInQueue(sortAndReturnNumerically(queue));
+    }else{
+      setSongsInQueue(sortAndReturnAlphabetically(queue));
+    }
+  };
+
+  const addSongToQueue = (name, artist) => {
+    let queueCopy = songsInQueue;
+
+    queueCopy.push({
+      name: name,
+      artist: artist,
+      votes: 0,
+    });
+    
+    sortQueue(queueCopy);
+  };
+
+  const upVote = (index, switchVote) => {
+    let queueCopy = [...songsInQueue];
+
+    queueCopy[index].votes += switchVote ? 2 : 1;
+
+    sortQueue(queueCopy);
+  };
+
+  const downVote = (index, switchVote) => {
+    let queueCopy = [...songsInQueue];
+
+    queueCopy[index].votes -= switchVote ? 2 : 1;
+
+    sortQueue(queueCopy);
+  };
+
+  const deleteSuggestion = (index) => {
+    let queueCopy = [...songsInQueue];
+
+    queueCopy.splice(index, 1);
+
+    sortQueue(queueCopy);
+  };
+
+  const toggleSortType = () =>{
+    setSortedByRank(!sortedByRank);
+  }
 
   return (
     <div>
@@ -36,28 +89,22 @@ function LiveQueue() {
         />
       </div>
 
-      <div className="song__queue">
-        Laborum nisi nostrud elit ullamco excepteur minim dolore ut voluptate
-        deserunt occaecat. Do ea ut do deserunt culpa deserunt. Consequat ipsum
-        excepteur sit ut irure ut cillum minim esse excepteur. Sint exercitation
-        sunt dolor exercitation pariatur nisi aliqua veniam sint id ex minim.
-        Laboris ea veniam qui amet magna fugiat sint commodo consequat et
-        voluptate. Commodo aute tempor in nulla ullamco commodo voluptate culpa
-        in voluptate deserunt dolor. Est velit dolore culpa anim sit ad amet et
-        do sit. Pariatur fugiat ad eu dolor pariatur exercitation veniam
-        consectetur. Aliquip mollit cillum dolore eiusmod veniam pariatur
-        laboris adipisicing. Reprehenderit amet non in consectetur aliquip
-        cupidatat ea reprehenderit. Ea elit aute proident fugiat amet consequat
-        enim voluptate. Consequat officia eu in ex veniam officia laborum dolore.
-      </div>
+      <QueueOptions sortedByRank={sortedByRank} toggleSortType={toggleSortType} />
 
-      <div
-        onClick={() => {
-          console.log("clicked: Request Song");
-        }}
-        className="song__request--container"
-      >
-        <p className="song__request--text">Request Song</p>
+      <div className="song__queue">
+        {songsInQueue.map((song, index) => (
+          <SongSuggestion
+            key={`${song.name} ${song.artist}`}
+            isAdmin={isAdmin}
+            name={song.name}
+            artist={song.artist}
+            votes={song.votes}
+            index={index}
+            upVote={upVote}
+            downVote={downVote}
+            deleteSuggestion={deleteSuggestion}
+          />
+        ))}
       </div>
     </div>
   );
