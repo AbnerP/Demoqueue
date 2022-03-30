@@ -8,6 +8,7 @@ import "./LiveQueue.css";
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
+  const [isAdmin,setIsAdmin] = useState(true);
 
   useEffect(() => {
     setCurrentSong({
@@ -34,21 +35,29 @@ function LiveQueue() {
     setSongsInQueue(sortAndReturn(queueCopy));
   };
 
-  const upVote = (index) => {
+  const upVote = (index,switchVote) => {
     let queueCopy = [...songsInQueue];
 
-    queueCopy[index].votes += 1;
+    queueCopy[index].votes += switchVote ? 2 : 1;
 
     setSongsInQueue(sortAndReturn(queueCopy));
   };
 
-  const downVote = (index) => {
+  const downVote = (index,switchVote) => {
     let queueCopy = [...songsInQueue];
 
-    queueCopy[index].votes -= 1;
+    queueCopy[index].votes -= switchVote ? 2 : 1;
 
     setSongsInQueue(sortAndReturn(queueCopy));
   };
+
+  const deleteSuggestion = (index) =>{
+    let queueCopy = [...songsInQueue];
+
+    queueCopy.splice(index,1);
+
+    setSongsInQueue(queueCopy);
+  }
 
   return (
     <div>
@@ -59,21 +68,6 @@ function LiveQueue() {
           albumWorkURL={currentSong.albumWorkURL}
         />
       </div>
-
-      <div className="song__queue">
-        {songsInQueue.map((song, index) => (
-          <SongSuggestion
-            key={`${song.name} ${song.artist}`}
-            name={song.name}
-            artist={song.artist}
-            votes={song.votes}
-            index={index}
-            upVote={upVote}
-            downVote={downVote}
-          />
-        ))}
-      </div>
-
       <div
         onClick={() => {
           console.log("clicked: Request Song");
@@ -82,6 +76,24 @@ function LiveQueue() {
       >
         <p className="song__request--text">Request Song</p>
       </div>
+
+      <div className="song__queue">
+        {songsInQueue.map((song, index) => (
+          <SongSuggestion
+            key={`${song.name} ${song.artist}`}
+            isAdmin={isAdmin}
+            name={song.name}
+            artist={song.artist}
+            votes={song.votes}
+            index={index}
+            upVote={upVote}
+            downVote={downVote}
+            deleteSuggestion={deleteSuggestion}
+          />
+        ))}
+      </div>
+
+      
     </div>
   );
 }

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import "./SongSuggestion.css";
+import VotingButtons from "./VotingButtons/VotingButtons";
+import { Delete } from "@material-ui/icons";
 import { IconButton } from "@material-ui/core";
-import { ArrowDropUp, ArrowDropDown } from "@material-ui/icons";
+import DeleteButton from "./DeleteButton/DeleteButton";
 
 function SongSuggestion(props) {
   return (
@@ -17,20 +19,17 @@ function SongSuggestion(props) {
           <span className="song__votes song__votes--text">votes</span>
         </div>
 
-        <div className="song__interactions--voting">
-          <IconButton
-            style={{ color: "#4BB543"}}
-            onClick={() => props.upVote(props.index)}
-          >
-            <ArrowDropUp style={{ transform:"scale(1.5)"}}/>
-          </IconButton>
-          <IconButton
-            style={{ color: "#eb5534"}}
-            onClick={() => props.downVote(props.index)}
-          >
-            <ArrowDropDown style={{ transform:"scale(1.5)"}}/>
-          </IconButton>
-        </div>
+        <VotingButtons
+          upVote={props.upVote}
+          downVote={props.downVote}
+          index={props.index}
+        />
+        
+        <DeleteButton
+          deleteSuggestion={props.deleteSuggestion}
+          isAdmin={props.isAdmin}
+          index={props.isAdmin}
+        />
       </div>
     </div>
   );
