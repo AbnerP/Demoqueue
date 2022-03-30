@@ -1,9 +1,7 @@
 import React from "react";
+import DeleteButton from "./DeleteButton/DeleteButton";
 import "./SongSuggestion.css";
 import VotingButtons from "./VotingButtons/VotingButtons";
-import { Delete } from "@material-ui/icons";
-import { IconButton } from "@material-ui/core";
-import DeleteButton from "./DeleteButton/DeleteButton";
 
 function SongSuggestion(props) {
   return (
