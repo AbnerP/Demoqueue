@@ -7,8 +7,8 @@ function SongSuggestion(props) {
   return (
     <div className="song__card">
       <div className="song__info">
-        <h3>{props.name}</h3>
-        <h4>{props.artist}</h4>
+        <h3 className="song__info--name">{props.name}</h3>
+        <h4 className="song__info--artist">{props.artist}</h4>
       </div>
 
       <div className="song__interactions">

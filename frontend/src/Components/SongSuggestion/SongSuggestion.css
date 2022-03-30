@@ -36,3 +36,20 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.song__info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.song__info--name{
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.song__info--artist{
+    font-size: 13px;
+    font-weight: 300;
+    color: rgb(95, 95, 95);
+}
