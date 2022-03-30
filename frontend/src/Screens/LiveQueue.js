@@ -34,18 +34,18 @@ function LiveQueue() {
     setSongsInQueue(sortAndReturn(queueCopy));
   };
 
-  const upVote = (index) => {
+  const upVote = (index,switchVote) => {
     let queueCopy = [...songsInQueue];
 
-    queueCopy[index].votes += 1;
+    queueCopy[index].votes += switchVote ? 2 : 1;
 
     setSongsInQueue(sortAndReturn(queueCopy));
   };
 
-  const downVote = (index) => {
+  const downVote = (index,switchVote) => {
     let queueCopy = [...songsInQueue];
 
-    queueCopy[index].votes -= 1;
+    queueCopy[index].votes -= switchVote ? 2 : 1;
 
     setSongsInQueue(sortAndReturn(queueCopy));
   };
