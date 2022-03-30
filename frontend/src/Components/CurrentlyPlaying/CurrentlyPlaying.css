@@ -2,9 +2,9 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   
-  margin-left: 2rem;
+  margin-left: 1rem;
 }
 
 .currentlyPlaying__albumwork {
@@ -20,8 +20,24 @@
   animation: spin 2s infinite linear;
 }
 
+.currentlyPlaying__albumworkName--container{
+  display: flex;
+  align-items: center;
+}
+
 .currentlyPlaying__songInfo {
-    
+    /* Styling */
+}
+
+.currentlyPlaying__songInfo--name {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.currentlyPlaying__songInfo--artist {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(95, 95, 95);
 }
 
 .currentlyPlaying__lockTimer{
