@@ -3,15 +3,17 @@ import './App.css';
 import LangdingPage from "./Screens/Landing";
 import LiveQueue from "./Screens/LiveQueue";
 import SessionCode from "./Screens/SessionCode";
+import StartEvent from "./Screens/StartEvent";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={ <Navigate to="/home"/>} />
+        <Route path="*" element={<Navigate to="/home"/>} />
         <Route path="/home" element={<LangdingPage />} />
         <Route path="/queue" element={<LiveQueue />} />
         <Route path="/code" element={<SessionCode />} />
+        <Route path="/start_event" element={<StartEvent />} />
       </Routes>
     </BrowserRouter>
   );

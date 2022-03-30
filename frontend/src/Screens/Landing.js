@@ -7,7 +7,7 @@ function LangdingPage() {
 
   return (
     <div className="container">
-      <h1 className="title">Demoqueue</h1>
+      <h1 className="title">DEMOQUEUE.</h1>
 
       <form className="queueForm"
         onSubmit={(e) => {
@@ -15,11 +15,11 @@ function LangdingPage() {
           console.log(e);
         }}
       >
-        <input type="text" />
+        <input type="text" placeholder="Event Code" />
         <button type="submit">Join Queue</button>
       </form>
       <br /><h3> OR </h3><br />
-      <button onClick={() => navigate("/queue")}>Create Queue</button>
+      <button onClick={() => navigate("/start_event")}>Create Queue</button>
     </div>
   );
 }
