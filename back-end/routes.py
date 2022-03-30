@@ -1,6 +1,4 @@
-import datetime
-
-from flask import render_template, redirect, url_for, request, flash, session, send_from_directory
+from flask import redirect, request, session
 from flask_login import login_required, logout_user, current_user, login_user
 
 from app import app, db
@@ -14,15 +12,14 @@ def sign_out():
     return 200
 
 @app.route('/login', methods=['GET', 'POST'])
-@login_required
 def login():
     if request.method == 'POST':
-        user = Host.query.filter_by(username=request.json['username'])
+        user = Host.query.filter_by(username=request.json['username']).one()
         if user.verify_password(request.json['password']):
             login_user(user)
-            return 200
+            return {"authenticated": current_user.is_authenticated}, 200
         else:
-            return 400
+            return {"authenticated": current_user.is_authenticated}, 200
     else:
         return {"authenticated": current_user.is_authenticated}, 200
 

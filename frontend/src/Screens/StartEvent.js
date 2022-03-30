@@ -27,6 +27,7 @@ function StartEvent(){
     }, []);
 
     function onSignup(event){
+        event.preventDefault();
         if(confirmPasswordInput !== passwordInput){
             alert("Passwords do not match");
             return;
@@ -42,10 +43,14 @@ function StartEvent(){
         };
         fetch('http://localhost:5000/sign_up', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
+            if(data.authenticated){
+                window.location.reload()
+            }
         });
     }
 
     function onLogin(event){
+        event.preventDefault();
         const requestOptions = {
             method: 'POST',
             credentials: 'include',
@@ -57,6 +62,7 @@ function StartEvent(){
         };
         fetch('http://localhost:5000/login', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
+            window.location.reload()
         });
     }
 
@@ -65,7 +71,7 @@ function StartEvent(){
         <input type="text" placeholder="Username" value={usernameInput} onChange={event => setUsernameInput(event.target.value)}/>
         <input type="password" placeholder="Password" value={passwordInput} onChange={event => setPasswordInput(event.target.value)}/>
         <input type="password" placeholder="Confirm Password" value={confirmPasswordInput} onChange={event => setConfirmPasswordInput(event.target.value)}/>
-        <button type="submit">Sign Up</button>
+        <button className="landingPage__button" type="submit">Sign Up</button>
       </form>
     );
 
@@ -73,7 +79,7 @@ function StartEvent(){
       <form className="queueForm" onSubmit={event => onLogin(event)}>
         <input type="text" placeholder="Username" value={usernameInput} onChange={event => setUsernameInput(event.target.value)}/>
         <input type="password" placeholder="Password" value={passwordInput} onChange={event => setPasswordInput(event.target.value)}/>
-        <button type="submit">Log In</button>
+        <button className="landingPage__button" type="submit">Log In</button>
       </form>
     );
 

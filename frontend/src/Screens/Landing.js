@@ -16,7 +16,7 @@ function LangdingPage() {
         }}
       >
         <input type="text" placeholder="Event Code" />
-        <button type="submit">Join Queue</button>
+        <button className="landingPage__button" type="submit">Join Queue</button>
       </form>
       <br /><h3> OR </h3><br />
       <button className="landingPage__button" onClick={() => navigate("/start_event")}>Create Queue</button>
