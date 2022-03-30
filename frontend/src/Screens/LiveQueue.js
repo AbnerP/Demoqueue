@@ -12,7 +12,7 @@ function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [sortedByRank, setSortedByRank] = useState(false);
+  const [sortedByRank, setSortedByRank] = useState(true);
 
   useEffect(() => {
     setCurrentSong({
