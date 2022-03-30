@@ -59,6 +59,14 @@ function LiveQueue() {
           albumWorkURL={currentSong.albumWorkURL}
         />
       </div>
+      <div
+        onClick={() => {
+          console.log("clicked: Request Song");
+        }}
+        className="song__request--container"
+      >
+        <p className="song__request--text">Request Song</p>
+      </div>
 
       <div className="song__queue">
         {songsInQueue.map((song, index) => (
@@ -74,14 +82,7 @@ function LiveQueue() {
         ))}
       </div>
 
-      <div
-        onClick={() => {
-          console.log("clicked: Request Song");
-        }}
-        className="song__request--container"
-      >
-        <p className="song__request--text">Request Song</p>
-      </div>
+      
     </div>
   );
 }
