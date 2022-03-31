@@ -7,11 +7,13 @@ from app import app, db
 from models import Host, Event, Song
 from spotify_client import get_user_playlists, get_playlist_songs, spotify_track, clientId
 
+
 @app.route('/sign_out')
 @login_required
 def sign_out():
     logout_user()
     return 200
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -25,15 +27,15 @@ def login():
     else:
         link = ""
         authenticated = current_user.is_authenticated
-        spotifyAuth = True
+        spotify_auth = True
 
         if session.get('spotify_token', None) is None \
                 or session.get('spotify_token_expires', None) is None \
                 or session['spotify_token_expires'] < datetime.datetime.now():
 
-            spotifyAuth = False
-            authEndpoint = "https://accounts.spotify.com/authorize"
-            redirectUri = "http://localhost:5000/spotify_webhook"
+            spotify_auth = False
+            auth_endpoint = "https://accounts.spotify.com/authorize"
+            redirect_uri = "http://localhost:5000/spotify_webhook"
 
             scopes = [
                 "user-read-currently-playing",
@@ -42,10 +44,10 @@ def login():
                 "user-modify-playback-state"
             ]
 
-            scopesStr = "%20".join(scopes)
-            link = f"{authEndpoint}?client_id={clientId}&redirect_uri={redirectUri}&scope={scopesStr}&response_type=code&show_dialog=true"
+            scopes_str = "%20".join(scopes)
+            link = f"{auth_endpoint}?client_id={clientId}&redirect_uri={redirect_uri}&scope={scopes_str}&response_type=code&show_dialog=true"
 
-        return {"authenticated": authenticated, "spotifyAuthorized": spotifyAuth, "spotifyAuthLink": link}, 200
+        return {"authenticated": authenticated, "spotifyAuthorized": spotify_auth, "spotifyAuthLink": link}, 200
 
 
 @app.route('/sign_up', methods=['POST'])
@@ -62,8 +64,8 @@ def sign_up():
     login_user(user, remember=True, force=True)
     return {"username": user.username, "authenticated": current_user.is_authenticated}, 200
 
+
 @app.route('/new_event', methods=['POST'])
 def new_event():
     # should pass in username and playlist ID
     pass
-

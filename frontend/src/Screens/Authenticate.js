@@ -69,7 +69,7 @@ function Authenticate(){
     }
 
     let signUpForm = (
-      <form className="queueForm" onSubmit={event => onSignup(event)}>
+      <form className="auth_form" onSubmit={event => onSignup(event)}>
         <input type="text" placeholder="Username" value={usernameInput} onChange={event => setUsernameInput(event.target.value)}/>
         <input type="password" placeholder="Password" value={passwordInput} onChange={event => setPasswordInput(event.target.value)}/>
         <input type="password" placeholder="Confirm Password" value={confirmPasswordInput} onChange={event => setConfirmPasswordInput(event.target.value)}/>
@@ -78,7 +78,7 @@ function Authenticate(){
     );
 
     let loginForm = (
-      <form className="queueForm" onSubmit={event => onLogin(event)}>
+      <form className="auth_form" onSubmit={event => onLogin(event)}>
         <input type="text" placeholder="Username" value={usernameInput} onChange={event => setUsernameInput(event.target.value)}/>
         <input type="password" placeholder="Password" value={passwordInput} onChange={event => setPasswordInput(event.target.value)}/>
         <button className="landingPage__button" type="submit">Log In</button>

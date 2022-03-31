@@ -1,12 +1,12 @@
 html{
     scroll-behavior: smooth;
-    background-color: #52527a;
+    background-color: #17072b;
     color: white;
 }
 
 * {
     margin: 0;
-    font-family: sans-serif;
+    font-family: monaco, Consolas, Lucida Console, monospace;
     --header-color:rgb(255, 255, 227);
 }
 
