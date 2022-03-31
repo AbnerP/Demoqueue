@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import './Landing.css';
 
-function LangdingPage() {
+function LandingPage() {
   const navigate = useNavigate();
 
   return (
@@ -19,9 +19,9 @@ function LangdingPage() {
         <button className="landingPage__button" type="submit">Join Queue</button>
       </form>
       <br /><h3> OR </h3><br />
-      <button className="landingPage__button" onClick={() => navigate("/start_event")}>Create Queue</button>
+      <button className="landingPage__button" onClick={() => navigate("/authenticate")}>Create Queue</button>
     </div>
   );
 }
 
-export default LangdingPage;
+export default LandingPage;
