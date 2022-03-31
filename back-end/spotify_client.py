@@ -2,14 +2,13 @@ import datetime
 import json
 
 from flask import redirect, session, request
-from flask_login import login_required
 from pip._vendor import requests
 
 from app import app
 
 
 clientId = "09be4ea5badf462fbe63a505c183c04d"
-clientSecret = "fe745f73b537424a9e69340df77ee329"
+clientSecret = "83243ddb2d5c44ebaef3ff58b233982b"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 spotify_base_api = "https://api.spotify.com/v1"
 
@@ -25,26 +24,6 @@ class spotify_track():
         self.name = name
         self.image_url = image_url
         self.artist = artist
-
-@login_required
-@app.route('/spotifyAuth', methods=['GET', 'POST'])
-def spotifyAuth():
-
-    authEndpoint = "https://accounts.spotify.com/authorize"
-    redirectUri = "http://localhost:5000/spotify_webhook"
-
-    scopes = [
-        "user-read-currently-playing",
-        "user-read-playback-state",
-        "playlist-read-private",
-        "user-modify-playback-state"
-    ]
-
-    scopesStr = "%20".join(scopes)
-    link = f"{authEndpoint}?client_id={clientId}&redirect_uri={redirectUri}&scope={scopesStr}&response_type=code&show_dialog=true"
-
-    return redirect(link)
-
 
 @app.route("/spotify_webhook")
 def api_callback():
@@ -69,7 +48,7 @@ def api_callback():
     session["spotify_token"] = access_token
     session["spotify_token_expires"] = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
 
-    return redirect("/start_event")
+    return redirect("http://localhost:3000/create_event")
 
 
 def get_user_playlists():

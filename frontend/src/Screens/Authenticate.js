@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./StartEvent.css";
+import "./Authenticate.css";
 import LiveQueue from "./LiveQueue";
 
-function StartEvent(){
+function Authenticate(){
 
     const navigate = useNavigate();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [usernameInput, setUsernameInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
     const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
@@ -22,8 +21,11 @@ function StartEvent(){
         };
         fetch('http://localhost:5000/login', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
-            setIsAuthenticated(data.authenticated);
+            if(data.authenticated){
+                data.spotifyAuthorized ? navigate('/create_event') : window.location.replace(data.spotifyAuthLink);
+            }
         });
+
     }, []);
 
     function onSignup(event){
@@ -83,15 +85,11 @@ function StartEvent(){
       </form>
     );
 
-    return isAuthenticated ? (
-         <div className = "container">
-            <h1>CREATE AN EVENT.</h1>
-         </div>
-        ) : (
+    return (
             <div className = "container">
                 <h1 className = "title">SIGN UP AS AN EVENT HOST.</h1>
                 {signUpForm}
-                <br /><h2>OR</h2><br />
+                <br /><h2>OR</h2>
                 <h1 className = "title">LOG IN.</h1>
                 {loginForm}
             </div>
@@ -99,4 +97,4 @@ function StartEvent(){
 
 }
 
-export default StartEvent;
+export default Authenticate;

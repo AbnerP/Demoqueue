@@ -9,11 +9,11 @@
 
 .title {
     padding-top: 2rem;
-    padding-bottom: 4rem;
+    padding-bottom: 2rem;
 }
 
 input[type=text], select, input[type=password] {
-  width: 60%;
+  width: 80%;
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
@@ -23,7 +23,7 @@ input[type=text], select, input[type=password] {
 }
 
 .landingPage__button{
-  width: 60%;
+  width: 80%;
   background-color: #4CAF50;
   color: white;
   padding: 14px 20px;
