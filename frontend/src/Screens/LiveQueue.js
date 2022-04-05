@@ -1,3 +1,5 @@
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
 import QueueOptions from "../Components/QueueOptions/QueueOptions";
@@ -13,6 +15,14 @@ function LiveQueue() {
   const [songsInQueue, setSongsInQueue] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sortedByRank, setSortedByRank] = useState(true);
+  const [toastOpen, setToastOpen] = useState(false);
+
+  const handleToastOpen = () => setToastOpen(true);
+  const handleToastClose = (event,reason) => {
+    if(reason === 'clickaway') return ;
+
+    setToastOpen(false);
+  };
 
   useEffect(() => {
     setCurrentSong({
@@ -21,10 +31,6 @@ function LiveQueue() {
       albumWorkURL:
         "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
     });
-
-    // for (let song of sampleSongData) {
-    //   addSongToQueue(song.name, song.artist);
-    // }
   }, []);
 
   useEffect(() => {
@@ -42,6 +48,7 @@ function LiveQueue() {
   const addSongToQueue = (name, artist) => {
     if(songsInQueue.filter(song => song.name === name && song.artist === artist).length > 0){
       console.log("Song is already in queue");
+      handleToastOpen();
       return ;
     }
     
@@ -115,6 +122,16 @@ function LiveQueue() {
           />
         ))}
       </div>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={4000}
+        onClose={handleToastClose}
+      >
+        <Alert onClose={handleToastClose} severity="error" sx={{ width: '100%' }}>
+          Song is already in the Queue
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

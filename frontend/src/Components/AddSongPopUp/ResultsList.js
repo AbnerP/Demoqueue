@@ -14,8 +14,8 @@ function ResultsList(props) {
   });
 
   return (
-    <Box sx={BOX_STYLE}>
-      {filteredData.map((song) => (
+    <Box sx={ITEM_BOX_STYLE}>
+      {/* {filteredData.map((song) => (
         <Result
           key={song.name}
           name={song.name}
@@ -26,12 +26,12 @@ function ResultsList(props) {
             props.onClose();
           }}
         />
-      ))}
+      ))} */}
     </Box>
   );
 }
 
-const BOX_STYLE = {
+const ITEM_BOX_STYLE = {
   overflowY:"auto",
   paddingBottom:"2rem",
   paddingLeft:"2rem",

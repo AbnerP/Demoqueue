@@ -1,17 +1,17 @@
-import { Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import React from 'react'
 
 
 function Result({name, artist,handleClick}) {
   return (
-    <div onClick={handleClick} style={containerStyle}>
+    <Box onClick={handleClick} style={containerStyle}>
         <Typography style={nameStyle}variant="h5" component="h3" >
             {name}
         </Typography>
         <Typography style={artistStyle}variant="h6" component="h4">
             {artist}
         </Typography>
-    </div>
+    </Box>
   )
 }
 
