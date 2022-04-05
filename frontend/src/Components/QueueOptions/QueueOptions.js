@@ -27,7 +27,7 @@ function QueueOptions(props) {
       </Button>
 
       <Modal open={addSongsOpen} onClose={handleClose}>
-        <AddSongPopUp onClose={handleClose}/>
+        <AddSongPopUp addSongToQueue={props.addSongToQueue} onClose={handleClose}/>
       </Modal>
     </div>
   );

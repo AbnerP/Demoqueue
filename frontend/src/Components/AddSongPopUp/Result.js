@@ -2,9 +2,9 @@ import { Typography } from '@material-ui/core';
 import React from 'react'
 
 
-function Result({name, artist}) {
+function Result({name, artist,handleClick}) {
   return (
-    <div style={containerStyle}>
+    <div onClick={handleClick} style={containerStyle}>
         <Typography style={nameStyle}variant="h5" component="h3" >
             {name}
         </Typography>

@@ -20,6 +20,11 @@ function ResultsList(props) {
           key={song.name}
           name={song.name}
           artist={song.artist}
+          handleClick={()=>{
+            console.log(`Adding: ${song.name}`)
+            props.addSongToQueue(song.name,song.artist);
+            props.onClose();
+          }}
         />
       ))}
     </Box>

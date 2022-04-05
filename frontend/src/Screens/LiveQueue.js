@@ -22,32 +22,37 @@ function LiveQueue() {
         "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
     });
 
-    for (let song of sampleSongData) {
-      addSongToQueue(song.name, song.artist);
-    }
+    // for (let song of sampleSongData) {
+    //   addSongToQueue(song.name, song.artist);
+    // }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     sortQueue([...songsInQueue]);
-  },[sortedByRank]);
+  }, [sortedByRank]);
 
   const sortQueue = (queue) => {
-    if(sortedByRank){
+    if (sortedByRank) {
       setSongsInQueue(sortAndReturnNumerically(queue));
-    }else{
+    } else {
       setSongsInQueue(sortAndReturnAlphabetically(queue));
     }
   };
 
   const addSongToQueue = (name, artist) => {
-    let queueCopy = songsInQueue;
+    if(songsInQueue.filter(song => song.name === name && song.artist === artist).length > 0){
+      console.log("Song is already in queue");
+      return ;
+    }
+    
+    let queueCopy = [...songsInQueue];
 
     queueCopy.push({
       name: name,
       artist: artist,
       votes: 0,
     });
-    
+
     sortQueue(queueCopy);
   };
 
@@ -75,9 +80,9 @@ function LiveQueue() {
     sortQueue(queueCopy);
   };
 
-  const toggleSortType = () =>{
+  const toggleSortType = () => {
     setSortedByRank(!sortedByRank);
-  }
+  };
 
   return (
     <div>
@@ -89,7 +94,11 @@ function LiveQueue() {
         />
       </div>
 
-      <QueueOptions sortedByRank={sortedByRank} toggleSortType={toggleSortType} />
+      <QueueOptions
+        sortedByRank={sortedByRank}
+        toggleSortType={toggleSortType}
+        addSongToQueue={addSongToQueue}
+      />
 
       <div className="song__queue">
         {songsInQueue.map((song, index) => (
