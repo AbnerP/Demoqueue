@@ -143,7 +143,7 @@ const nameStyle = {
 
 const artistStyle = {
   fontSize: "15px",
-  color: "#cccccc",
+  color: "rgb(140, 140, 140)",
 };
 
 export default QueueOptions;
