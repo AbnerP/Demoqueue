@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
 import QueueOptions from "../Components/QueueOptions/QueueOptions";
 import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
-import { sampleSongData } from "../Helpers/data";
 import sortAndReturnNumerically, {
-  sortAndReturnAlphabetically,
+  sortAndReturnAlphabetically
 } from "../Helpers/sort";
 import "./LiveQueue.css";
 

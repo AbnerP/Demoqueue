@@ -1,11 +1,8 @@
+import { Box, Button, IconButton, Modal, Typography } from "@material-ui/core";
+import { Add, Close, Sort } from "@material-ui/icons";
 import React, { useState } from "react";
-import { Box, Button, IconButton, Modal, Snackbar, Typography } from "@material-ui/core";
-import { Add, Sort } from "@material-ui/icons";
-import { Close } from "@material-ui/icons";
 import { sampleSongData } from "../../Helpers/data";
-// import Modal from "../Modal/Modal";
 import "./QueueOptions.css";
-import AddSongPopUp from "../AddSongPopUp/AddSongPopUp";
 
 function QueueOptions(props) {
   const [addSongsOpen, setAddSongsOpen] = useState(false);
