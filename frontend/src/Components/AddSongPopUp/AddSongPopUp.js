@@ -1,7 +1,38 @@
-import { Box, Button, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, IconButton, TextField, Typography } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import { Close } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
+import ResultsList from "./ResultsList";
+
+function AddSongPopUp(props) {
+  const [inputText, setInputText] = useState("");
+
+  const inputHandler = (e) => {
+    let lowerCase = e.target.value.toLowerCase();
+    setInputText(lowerCase);
+  };
+
+  return (
+    <Box sx={BOX_STYLE}>
+      <Typography 
+      style={SEARCH_TEXT}
+      variant="h5" component="h2" align="center" >
+        Song Search
+      </Typography>
+
+      <IconButton style={EXIT_BUTTON} onClick={props.onClose}>
+        <Close />
+      </IconButton>
+
+      <input type="text" placeholder="Song Name" onChange={inputHandler}/>
+
+      <ResultsList input={inputText}/>
+    </Box>
+  );
+}
+
+
+
 const BOX_STYLE = {
   position: "absolute",
   top: "50%",
@@ -28,25 +59,8 @@ const EXIT_BUTTON = {
 
 const SEARCH_TEXT = {
   paddingTop:"2rem",
+  color:"black",
   margin:0
 };
-
-function AddSongPopUp(props) {
-  return (
-    <Box sx={BOX_STYLE}>
-      <Typography 
-      style={SEARCH_TEXT}
-      variant="h5" component="h2" align="center" color="">
-        Song Search
-      </Typography>
-
-      <IconButton style={EXIT_BUTTON} onClick={props.onClose}>
-        <Close />
-      </IconButton>
-
-      <input type="text" placeholder="Song Name" />
-    </Box>
-  );
-}
 
 export default AddSongPopUp;
