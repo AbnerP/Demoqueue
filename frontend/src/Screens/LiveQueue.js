@@ -47,7 +47,6 @@ function LiveQueue() {
 
   const addSongToQueue = (name, artist) => {
     if(songsInQueue.filter(song => song.name === name && song.artist === artist).length > 0){
-      console.log("Song is already in queue");
       handleToastOpen();
       return ;
     }

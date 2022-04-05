@@ -64,7 +64,6 @@ function QueueOptions(props) {
               <Box
                 key={song.name}
                 onClick={() => {
-                  console.log(`Adding: ${song.name}`);
                   props.addSongToQueue(song.name, song.artist);
                   handleClose();
                 }}
