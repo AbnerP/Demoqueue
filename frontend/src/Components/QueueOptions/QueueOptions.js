@@ -86,25 +86,18 @@ function QueueOptions(props) {
   );
 }
 
-const ITEM_BOX_STYLE = {
-  overflowY: "auto",
-  paddingBottom: "2rem",
-  paddingLeft: "2rem",
-  paddingRight: "2rem",
-};
-
 const BOX_STYLE = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-
+  
   width: "75%",
   height: "75vh",
   borderRadius: "1rem",
-
-  bgcolor: "background.paper",
-
+  
+  // bgcolor: "background.paper",
+  backgroundColor:"#1c0835",
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
@@ -114,32 +107,44 @@ const EXIT_BUTTON = {
   position: "absolute",
   top: ".5rem",
   right: ".5rem",
+  color:"white",
   transform: "scale(1.3)",
 };
 
 const SEARCH_TEXT = {
   paddingTop: "2rem",
-  color: "black",
   margin: 0,
 };
 
 const containerStyle = {
   width: "53.5vw",
-
-  color: "black",
-  backgroundColor: "#ededed",
-
-  borderRadius: "1rem",
-
-  padding: "1rem",
+  borderBottom:"1px solid gray",
+  paddingBottom:"1rem",
+  // width: "75%",
+  
+  color: "white",
+  // backgroundColor: "#ededed",
+  
+  // borderRadius: "1rem",
+  
+  // padding: "1rem",
   margin: "1rem 0",
+};
+
+const ITEM_BOX_STYLE = {
+  overflowY: "auto",
+  paddingBottom: "2rem",
+  paddingLeft: "2rem",
+  paddingRight: "2rem",
 };
 
 const nameStyle = {
   fontSize: "18px",
 };
+
 const artistStyle = {
   fontSize: "15px",
-  color: "#4a4a4a",
+  color: "#cccccc",
 };
+
 export default QueueOptions;
