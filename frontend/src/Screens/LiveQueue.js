@@ -1,10 +1,11 @@
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
 import QueueOptions from "../Components/QueueOptions/QueueOptions";
 import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
-import { sampleSongData } from "../Helpers/data";
 import sortAndReturnNumerically, {
-  sortAndReturnAlphabetically,
+  sortAndReturnAlphabetically
 } from "../Helpers/sort";
 import "./LiveQueue.css";
 
@@ -13,6 +14,14 @@ function LiveQueue() {
   const [songsInQueue, setSongsInQueue] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sortedByRank, setSortedByRank] = useState(true);
+  const [toastOpen, setToastOpen] = useState(false);
+
+  const handleToastOpen = () => setToastOpen(true);
+  const handleToastClose = (event,reason) => {
+    if(reason === 'clickaway') return ;
+
+    setToastOpen(false);
+  };
 
   useEffect(() => {
     setCurrentSong({
@@ -21,33 +30,34 @@ function LiveQueue() {
       albumWorkURL:
         "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
     });
-
-    for (let song of sampleSongData) {
-      addSongToQueue(song.name, song.artist);
-    }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     sortQueue([...songsInQueue]);
-  },[sortedByRank]);
+  }, [sortedByRank]);
 
   const sortQueue = (queue) => {
-    if(sortedByRank){
+    if (sortedByRank) {
       setSongsInQueue(sortAndReturnNumerically(queue));
-    }else{
+    } else {
       setSongsInQueue(sortAndReturnAlphabetically(queue));
     }
   };
 
   const addSongToQueue = (name, artist) => {
-    let queueCopy = songsInQueue;
+    if(songsInQueue.filter(song => song.name === name && song.artist === artist).length > 0){
+      handleToastOpen();
+      return ;
+    }
+    
+    let queueCopy = [...songsInQueue];
 
     queueCopy.push({
       name: name,
       artist: artist,
       votes: 0,
     });
-    
+
     sortQueue(queueCopy);
   };
 
@@ -75,9 +85,9 @@ function LiveQueue() {
     sortQueue(queueCopy);
   };
 
-  const toggleSortType = () =>{
+  const toggleSortType = () => {
     setSortedByRank(!sortedByRank);
-  }
+  };
 
   return (
     <div>
@@ -89,7 +99,11 @@ function LiveQueue() {
         />
       </div>
 
-      <QueueOptions sortedByRank={sortedByRank} toggleSortType={toggleSortType} />
+      <QueueOptions
+        sortedByRank={sortedByRank}
+        toggleSortType={toggleSortType}
+        addSongToQueue={addSongToQueue}
+      />
 
       <div className="song__queue">
         {songsInQueue.map((song, index) => (
@@ -106,6 +120,16 @@ function LiveQueue() {
           />
         ))}
       </div>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={4000}
+        onClose={handleToastClose}
+      >
+        <Alert onClose={handleToastClose} severity="error" sx={{ width: '100%' }}>
+          Song is already in the Queue
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
