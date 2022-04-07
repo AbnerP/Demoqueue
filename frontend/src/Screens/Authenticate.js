@@ -16,10 +16,11 @@ function Authenticate(){
             credentials: 'include',
             headers : {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Origin': 'http://localhost:3000'
             }
         };
-        fetch('http://localhost:5000/login', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8080/login', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             if(data.authenticated){
                 data.spotifyAuthorized ? navigate('/create_event') : window.location.replace(data.spotifyAuthLink);
@@ -39,11 +40,12 @@ function Authenticate(){
             credentials: 'include',
             headers : {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Origin': 'http://localhost:3000',
             },
             body: JSON.stringify({username: usernameInput, password: passwordInput})
         };
-        fetch('http://localhost:5000/sign_up', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8080/sign_up', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             if(data.authenticated){
                 window.location.reload()
@@ -62,7 +64,7 @@ function Authenticate(){
             },
             body: JSON.stringify({username: usernameInput, password: passwordInput})
         };
-        fetch('http://localhost:5000/login', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8080/login', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             window.location.reload()
         });
