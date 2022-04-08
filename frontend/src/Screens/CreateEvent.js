@@ -37,7 +37,7 @@ function CreateEvent() {
                 'Accept': 'application/json'
             }
         };
-        fetch('http://localhost:5000/host_spotify_playlists', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8082/host_spotify_playlists', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             setHostPlaylists(data.playlists);
         });
@@ -57,7 +57,7 @@ function CreateEvent() {
             },
             body: JSON.stringify({"playlist_spotify_id": selectedPlaylist})
         };
-        fetch('http://localhost:5000/create_event_queue', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8082/create_event_queue', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             if(data.success){
                 navigate('/queue?='+data.event_name);
