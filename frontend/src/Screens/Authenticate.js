@@ -16,8 +16,7 @@ function Authenticate(){
             credentials: 'include',
             headers : {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Origin': 'http://localhost:3000'
+                'Accept': 'application/json'
             }
         };
         fetch('http://localhost:8080/login', requestOptions).then(res => res.json()).then(data => {
@@ -40,8 +39,7 @@ function Authenticate(){
             credentials: 'include',
             headers : {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Origin': 'http://localhost:3000',
+                'Accept': 'application/json'
             },
             body: JSON.stringify({username: usernameInput, password: passwordInput})
         };
