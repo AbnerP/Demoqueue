@@ -18,7 +18,7 @@ function CreateEvent() {
                 'Accept': 'application/json'
             }
         };
-        fetch('http://localhost:5000/login', requestOptions).then(res => res.json()).then(data => {
+        fetch('http://localhost:8080/login', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             if(!data.authenticated || !data.spotifyAuthorized){
                 navigate('/authenticate')
