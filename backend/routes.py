@@ -35,7 +35,7 @@ def login():
 
             spotify_auth = False
             auth_endpoint = "https://accounts.spotify.com/authorize"
-            redirect_uri = "http://localhost:5000/spotify_webhook"
+            redirect_uri = "http://localhost:8080/spotify_webhook"
 
             scopes = [
                 "user-read-currently-playing",

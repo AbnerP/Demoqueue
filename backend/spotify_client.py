@@ -32,7 +32,7 @@ def api_callback():
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": "http://localhost:5000/spotify_webhook",
+        "redirect_uri": "http://localhost:8080/spotify_webhook",
         'client_id': clientId,
         'client_secret': clientSecret,
     }
