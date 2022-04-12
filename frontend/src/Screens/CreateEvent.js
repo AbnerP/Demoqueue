@@ -60,7 +60,7 @@ function CreateEvent() {
         fetch('http://localhost:8082/create_event_queue', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
             if(data.success){
-                navigate('/queue?='+data.event_name);
+                navigate('/queue?event_name='+data.event_name);
             }
         });
     }

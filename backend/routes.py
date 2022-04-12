@@ -83,3 +83,14 @@ def create_event_queue():
         return {"error": str(e)}, 200
 
     return {"success": True, "event_name": event.name}
+
+
+@app.route('/event_songs', methods=['GET'])
+def event_songs():
+    try:
+        event = Event.query.filter_by(name=request.args['event_name']).one()
+        songs = Song.query.join(Event, event.id == Song.event_id).all()
+    except Exception as e:
+        return {"error": str(e)}, 200
+
+    return {"songs": [{"name": song.name, "artist": song.artist} for song in songs]}
