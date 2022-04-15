@@ -19,11 +19,20 @@ class spotify_playlist():
         self.image_url = image_url
         self.track_count = track_count
 
+    def as_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "image_url": self.image_url,
+            "track_count": self.track_count
+        }
+
 class spotify_track():
-    def __init__(self, name, artist, image_url):
+    def __init__(self, name, artist, image_url, id):
         self.name = name
         self.image_url = image_url
         self.artist = artist
+        self.id = id
 
 @app.route("/spotify_webhook")
 def api_callback():
@@ -32,25 +41,26 @@ def api_callback():
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": "http://localhost:5000/spotify_webhook",
+        "redirect_uri": "http://localhost:8082/spotify_webhook",
         'client_id': clientId,
         'client_secret': clientSecret,
     }
     post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload)
 
     response_data = json.loads(post_request.text)
-    print(response_data)
     access_token = response_data["access_token"]
     refresh_token = response_data["refresh_token"]
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
 
     session["spotify_token"] = access_token
+    session["spotify_refresh_token"] = refresh_token
     session["spotify_token_expires"] = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
 
     return redirect("http://localhost:3000/create_event")
 
 
+@app.route('/host_spotify_playlists', methods=['GET'])
 def get_user_playlists():
     token = session["spotify_token"]
     authorization_header = {"Authorization": "Bearer {}".format(token)}
@@ -74,7 +84,7 @@ def get_user_playlists():
             track_count=playlist["tracks"]["total"],
         ))
 
-    return playlists
+    return {"playlists": [playlist.as_json() for playlist in playlists]}
 
 
 def get_playlist_songs(playlist_spotify_id):
@@ -82,24 +92,18 @@ def get_playlist_songs(playlist_spotify_id):
     authorization_header = {"Authorization": "Bearer {}".format(token)}
 
     playlist_api_endpoint = "{}/playlists/{}".format(spotify_base_api, playlist_spotify_id)
-    print(playlist_api_endpoint)
     playlist_response = requests.get(playlist_api_endpoint, headers=authorization_header)
     playlist_data = json.loads(playlist_response.text)
-    print(playlist_response)
 
     songs = playlist_data["tracks"]["items"]
     parsed_songs = []
-    print(songs[0])
 
     for song in songs:
         artist = (", ").join([str(a["name"]) for a in song["track"]["artists"]])
-        print(artist)
         song_name = song["track"]["name"]
-        print(song_name)
         song_img_url = song["track"]["album"]["images"][0]["url"]
-        print(song_img_url)
-        song_object = spotify_track(name=song_name, artist=artist, image_url=song_img_url)
-        print(song_object)
+        song_id = song["track"]["id"]
+        song_object = spotify_track(name=song_name, artist=artist, image_url=song_img_url, id=song_id)
         parsed_songs.append(song_object)
 
     return parsed_songs

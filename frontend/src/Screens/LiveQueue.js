@@ -36,6 +36,32 @@ function LiveQueue() {
     sortQueue([...songsInQueue]);
   }, [sortedByRank]);
 
+  useEffect(() => {
+    if(songsInQueue.length > 0){
+      return;
+    }
+    let search = window.location.search;
+    let params = new URLSearchParams(search);
+    let event_name = params.get('event_name');
+    const requestOptions = {
+      method: 'GET',
+      credentials: 'include',
+      headers : {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    };
+        fetch('http://localhost:8082/event_songs?event_name='+event_name, requestOptions).then(res => res.json()).then(data => {
+          console.log(data);
+          let song_list = [...songsInQueue]
+          data.songs.forEach(song => {
+            song_list.push({name: song.name, artist: song.artist, votes: 0});
+          });
+          console.log(song_list);
+          sortQueue(song_list)
+        });
+  })
+
   const sortQueue = (queue) => {
     if (sortedByRank) {
       setSongsInQueue(sortAndReturnNumerically(queue));

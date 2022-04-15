@@ -27,6 +27,7 @@ class Host(UserMixin, db.Model):
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    spotify_id=db.Column(db.String(64), nullable=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
     songs = db.relationship("Song", backref="event")
 
@@ -36,6 +37,7 @@ class Event(db.Model):
 
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    spotify_id = db.Column(db.String(64), nullable=True)
     name = db.Column(db.String(64), nullable=False)
     artist = db.Column(db.String(64), nullable=False)
     rating = db.Column(db.SmallInteger, nullable=False)

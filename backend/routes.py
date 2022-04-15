@@ -1,4 +1,6 @@
 import datetime
+import random
+import string
 
 from flask import redirect, request, session
 from flask_login import login_required, logout_user, current_user, login_user
@@ -35,7 +37,7 @@ def login():
 
             spotify_auth = False
             auth_endpoint = "https://accounts.spotify.com/authorize"
-            redirect_uri = "http://localhost:5000/spotify_webhook"
+            redirect_uri = "http://localhost:8082/spotify_webhook"
 
             scopes = [
                 "user-read-currently-playing",
@@ -65,7 +67,30 @@ def sign_up():
     return {"username": user.username, "authenticated": current_user.is_authenticated}, 200
 
 
-@app.route('/new_event', methods=['POST'])
-def new_event():
-    # should pass in username and playlist ID
-    pass
+@app.route('/create_event_queue', methods=['POST'])
+def create_event_queue():
+    try:
+        playlist_spotify_id = request.json['playlist_spotify_id']
+        playlist_songs = get_playlist_songs(playlist_spotify_id)
+        event = Event(name=current_user.username+''.join(random.choices(string.ascii_lowercase, k=5)), spotify_id=playlist_spotify_id)
+        db.session.add(event)
+        db.session.commit()
+        for song in playlist_songs:
+            song_db_object = Song(spotify_id=song.id, name=song.name, artist=song.artist, rating=0, event_id=event.id)
+            db.session.add(song_db_object)
+        db.session.commit()
+    except Exception as e:
+        return {"error": str(e)}, 200
+
+    return {"success": True, "event_name": event.name}
+
+
+@app.route('/event_songs', methods=['GET'])
+def event_songs():
+    try:
+        event = Event.query.filter_by(name=request.args['event_name']).one()
+        songs = Song.query.join(Event, event.id == Song.event_id).all()
+    except Exception as e:
+        return {"error": str(e)}, 200
+
+    return {"songs": [{"name": song.name, "artist": song.artist} for song in songs]}
