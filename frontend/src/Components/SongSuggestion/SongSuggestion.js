@@ -19,6 +19,7 @@ function SongSuggestion(props) {
 
         <VotingButtons
           upVote={props.upVote}
+          songId={props.id}
           downVote={props.downVote}
           index={props.index}
         />

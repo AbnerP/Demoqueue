@@ -1,11 +1,13 @@
 import datetime
 import random
 import string
+import sys
 
 from flask import redirect, request, session
 from flask_login import login_required, logout_user, current_user, login_user
 
-from app import app, db
+from app import app, db, socketio
+from flask_socketio import emit
 from models import Host, Event, Song
 from spotify_client import get_user_playlists, get_playlist_songs, spotify_track, clientId
 
@@ -14,7 +16,7 @@ from spotify_client import get_user_playlists, get_playlist_songs, spotify_track
 @login_required
 def sign_out():
     logout_user()
-    return 200
+    return {"success": True}, 200
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,4 +95,18 @@ def event_songs():
     except Exception as e:
         return {"error": str(e)}, 200
 
-    return {"songs": [{"name": song.name, "artist": song.artist} for song in songs]}
+    return {"songs": [{"name": song.name, "artist": song.artist, "id": song.id, "votes": song.rating} for song in songs]}
+
+
+@socketio.on('vote')
+def handle_vote(vote):
+    print('received json: ' + str(vote))
+    try:
+        song = Song.query.get(vote["song"])
+        song.rating += vote["change"]
+        db.session.add(song)
+        db.session.commit()
+    except Exception as e:
+        print(str(e), file=sys.stderr)
+    emit('send_vote', vote, broadcast=True, include_self=False)
+    return None
