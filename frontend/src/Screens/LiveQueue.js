@@ -78,10 +78,10 @@ function LiveQueue() {
     
     let queueCopy = [...songsInQueue];
 
-    queueCopy.push({
+    queueCopy.unshift({
       name: name,
       artist: artist,
-      votes: 0,
+      votes: 1,
     });
 
     sortQueue(queueCopy);
