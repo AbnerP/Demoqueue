@@ -103,9 +103,12 @@ function LiveQueue() {
       fetch("http://localhost:8082/currently_playing", requestOptions)
         .then((res) => res.json())
         .then((data) => {
-          setSongProgress(data.progress_ms / 1000);
-          setSongDuration(data.item.duration_ms / 1000);
-          setInterval(() => {
+          if(data.no_playback){
+            console.log("no playback");
+          }else{
+            setSongProgress(data.progress_ms / 1000);
+            setSongDuration(data.item.duration_ms / 1000);
+            setInterval(() => {
             setSongProgress((seconds) => seconds + 1);
           }, 1000);
           setTimeout(() => {
@@ -113,15 +116,13 @@ function LiveQueue() {
             if (isAdmin) {
               console.log("admin adding song to queue");
               requestOptions.method = "POST";
+              requestOptions.withCredentials = true;
               let queue = [...queueRef.current];
               queue = sortAndReturnNumerically(queue);
-              // console.log(queue[0].spotify_id);
-              requestOptions.body = { "spotify_uri": queue[0].spotify_id };
-              console.log(requestOptions);
-              // axios.post("http://localhost:8082/add_song_to_queue",{ spotify_uri: queue[0].spotify_id },)
-              fetch("http://localhost:8082/add_song_to_queue", requestOptions)
-                .then((res) => res.json())
-                .then((data) => console.log(data)).catch((e)=>console.error(e));
+
+              console.log("adding",queue[0]);
+              axios.post("http://localhost:8082/add_song_to_queue",{ spotify_uri: queue[0].spotify_id },requestOptions)
+                .then(res => console.log(res.data));
             }
           }, data.item.duration_ms - data.progress_ms - 30 * 1000);
           setTimeout(() => {
@@ -132,7 +133,8 @@ function LiveQueue() {
             data.item.name,
             data.item.artists[0].name,
             data.item.album.images[0].url
-          );
+            );
+          }
         });
     };
     getCurrentlyPlayingSong();

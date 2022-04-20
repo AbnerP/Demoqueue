@@ -115,6 +115,8 @@ def get_currently_playing_song_status():
 
     player_api_endpoint = "{}/me/player".format(spotify_base_api)
     players_response = requests.get(player_api_endpoint, headers=authorization_header)
+    if len(players_response.text) <= 1:
+        return {"no_playback":True}
     player_data = json.loads(players_response.text)
 
     return player_data
@@ -122,14 +124,14 @@ def get_currently_playing_song_status():
 @app.route('/add_song_to_queue', methods=['POST'])
 def add_song_to_queue():
     try:
-        spotify_uri = request.json['spotify_uri']
         token = session["spotify_token"]
+        spotify_uri = request.json["spotify_uri"]
         authorization_header = {"Authorization": "Bearer {}".format(token)}
 
-        queue_api_endpoint = "{}/me/player/queue?uri={}".format(spotify_base_api,spotify_uri)
-        queues_response = requests.post(queue_api_endpoint,headers=authorization_header)
+        queue_api_endpoint = "{}/me/player/queue?uri={}".format(spotify_base_api,spotify_uri)        
+        requests.post(queue_api_endpoint,headers=authorization_header)
+        return {"res":"Song added successfully"}
     except Exception as e:
         print(e)
-    # queue_data = json.loads(queues_response.text)
 
-    return {"res":"Song added to queue"}
+    return {"res":"Song wasn't added succesfully"}
