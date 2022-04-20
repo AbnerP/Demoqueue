@@ -28,11 +28,12 @@ class spotify_playlist():
         }
 
 class spotify_track():
-    def __init__(self, name, artist, image_url, id):
+    def __init__(self, name, artist, image_url, id,uri):
         self.name = name
         self.image_url = image_url
         self.artist = artist
         self.id = id
+        self.uri = uri
 
 @app.route("/spotify_webhook")
 def api_callback():
@@ -58,7 +59,6 @@ def api_callback():
     session["spotify_token_expires"] = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
 
     return redirect("http://localhost:3000/create_event")
-
 
 @app.route('/host_spotify_playlists', methods=['GET'])
 def get_user_playlists():
@@ -86,7 +86,6 @@ def get_user_playlists():
 
     return {"playlists": [playlist.as_json() for playlist in playlists]}
 
-
 def get_playlist_songs(playlist_spotify_id):
     token = session["spotify_token"]
     authorization_header = {"Authorization": "Bearer {}".format(token)}
@@ -103,7 +102,34 @@ def get_playlist_songs(playlist_spotify_id):
         song_name = song["track"]["name"]
         song_img_url = song["track"]["album"]["images"][0]["url"]
         song_id = song["track"]["id"]
-        song_object = spotify_track(name=song_name, artist=artist, image_url=song_img_url, id=song_id)
+        song_uri = song["track"]["uri"]
+        song_object = spotify_track(name=song_name, artist=artist, image_url=song_img_url, id=song_id,uri=song_uri)
         parsed_songs.append(song_object)
 
     return parsed_songs
+
+@app.route('/currently_playing', methods=['GET'])
+def get_currently_playing_song_status():
+    token = session["spotify_token"]
+    authorization_header = {"Authorization": "Bearer {}".format(token)}
+
+    player_api_endpoint = "{}/me/player".format(spotify_base_api)
+    players_response = requests.get(player_api_endpoint, headers=authorization_header)
+    player_data = json.loads(players_response.text)
+
+    return player_data
+
+@app.route('/add_song_to_queue', methods=['POST'])
+def add_song_to_queue():
+    try:
+        spotify_uri = request.json['spotify_uri']
+        token = session["spotify_token"]
+        authorization_header = {"Authorization": "Bearer {}".format(token)}
+
+        queue_api_endpoint = "{}/me/player/queue?uri={}".format(spotify_base_api,spotify_uri)
+        queues_response = requests.post(queue_api_endpoint,headers=authorization_header)
+    except Exception as e:
+        print(e)
+    # queue_data = json.loads(queues_response.text)
+
+    return {"res":"Song added to queue"}

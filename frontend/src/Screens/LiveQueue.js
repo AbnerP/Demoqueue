@@ -4,8 +4,9 @@ import React, { useEffect, useState } from "react";
 import CurrentlyPlaying from "../Components/CurrentlyPlaying/CurrentlyPlaying";
 import QueueOptions from "../Components/QueueOptions/QueueOptions";
 import SongSuggestion from "../Components/SongSuggestion/SongSuggestion";
+import axios from "axios";
 import sortAndReturnNumerically, {
-  sortAndReturnAlphabetically
+  sortAndReturnAlphabetically,
 } from "../Helpers/sort";
 import "./LiveQueue.css";
 import io from "socket.io-client";
@@ -15,13 +16,17 @@ let socket = io.connect("http://localhost:8082");
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
+  const [songProgress, setSongProgress] = useState(0);
+  const [songDuration, setSongDuration] = useState(0);
   const queueRef = React.useRef(songsInQueue);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(
+    JSON.parse(localStorage.getItem("admin")) === true || false
+  );
   const [sortedByRank, setSortedByRank] = useState(true);
   const [toastOpen, setToastOpen] = useState(false);
   const handleToastOpen = () => setToastOpen(true);
-  const handleToastClose = (event,reason) => {
-    if(reason === 'clickaway') return ;
+  const handleToastClose = (event, reason) => {
+    if (reason === "clickaway") return;
     setToastOpen(false);
   };
 
@@ -30,10 +35,10 @@ function LiveQueue() {
   });
 
   useEffect(() => {
-    socket.on("send_vote", vote => {
-      console.log('useEffect on send vote');
+    socket.on("send_vote", (vote) => {
+      console.log("useEffect on send vote");
       let queueCopy = [...queueRef.current];
-      const idx = queueCopy.findIndex(song => song.id === vote.song);
+      const idx = queueCopy.findIndex((song) => song.id === vote.song);
       queueCopy[idx].votes += vote.change;
       sortQueue(queueCopy);
     });
@@ -41,10 +46,10 @@ function LiveQueue() {
 
   useEffect(() => {
     setCurrentSong({
-      name: "The Spins",
-      artist: "Mac Miller",
+      name: "",
+      artist: "",
       albumWorkURL:
-        "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/002/249/673/small/music-note-icon-song-melody-tune-flat-symbol-free-vector.jpg",
     });
   }, []);
 
@@ -55,28 +60,91 @@ function LiveQueue() {
   useEffect(() => {
     let search = window.location.search;
     let params = new URLSearchParams(search);
-    let event_name = params.get('event_name');
+    let event_name = params.get("event_name");
     const requestOptions = {
-      method: 'GET',
-      credentials: 'include',
-      headers : {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
     };
-    fetch('http://localhost:8082/event_songs?event_name='+event_name, requestOptions).then(res => res.json()).then(data => {
-      console.log("Got all songs from API", data.songs);
-      let song_list = [...songsInQueue]
-      data.songs.forEach(song => {
-        song_list.push({name: song.name, artist: song.artist, id: song.id, votes: song.votes});
+    fetch(
+      "http://localhost:8082/event_songs?event_name=" + event_name,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Got all songs from API", data.songs);
+        let song_list = [...songsInQueue];
+        data.songs.forEach((song) => {
+          song_list.push({
+            name: song.name,
+            artist: song.artist,
+            id: song.id,
+            votes: song.votes,
+            spotify_id: song.spotify_id,
+          });
+        });
+        sortQueue(song_list);
       });
-      sortQueue(song_list)
+  }, []);
+
+  useEffect(() => {
+    const getCurrentlyPlayingSong = async () => {
+      let requestOptions = {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      };
+      fetch("http://localhost:8082/currently_playing", requestOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          setSongProgress(data.progress_ms / 1000);
+          setSongDuration(data.item.duration_ms / 1000);
+          setInterval(() => {
+            setSongProgress((seconds) => seconds + 1);
+          }, 1000);
+          setTimeout(() => {
+            console.log("add to queue");
+            if (isAdmin) {
+              console.log("admin adding song to queue");
+              requestOptions.method = "POST";
+              let queue = [...queueRef.current];
+              queue = sortAndReturnNumerically(queue);
+              // console.log(queue[0].spotify_id);
+              requestOptions.body = { "spotify_uri": queue[0].spotify_id };
+              console.log(requestOptions);
+              // axios.post("http://localhost:8082/add_song_to_queue",{ spotify_uri: queue[0].spotify_id },)
+              fetch("http://localhost:8082/add_song_to_queue", requestOptions)
+                .then((res) => res.json())
+                .then((data) => console.log(data)).catch((e)=>console.error(e));
+            }
+          }, data.item.duration_ms - data.progress_ms - 30 * 1000);
+          setTimeout(() => {
+            console.log("song ended");
+            window.location.reload();
+          }, data.item.duration_ms - data.progress_ms - 2000);
+          updateCurrentlyPlaying(
+            data.item.name,
+            data.item.artists[0].name,
+            data.item.album.images[0].url
+          );
+        });
+    };
+    getCurrentlyPlayingSong();
+  }, []);
+
+  const updateCurrentlyPlaying = (name, artist, imageURL) => {
+    setCurrentSong({
+      name: name,
+      artist: artist,
+      albumWorkURL: imageURL,
     });
-  }, [])
-
-  const updateCurrentlyPlaying = () => {
-
-  }
+  };
 
   const sortQueue = (queue) => {
     if (sortedByRank) {
@@ -87,11 +155,15 @@ function LiveQueue() {
   };
 
   const addSongToQueue = (name, artist) => {
-    if(songsInQueue.filter(song => song.name === name && song.artist === artist).length > 0){
+    if (
+      songsInQueue.filter(
+        (song) => song.name === name && song.artist === artist
+      ).length > 0
+    ) {
       handleToastOpen();
-      return ;
+      return;
     }
-    
+
     let queueCopy = [...songsInQueue];
 
     queueCopy.unshift({
@@ -105,14 +177,20 @@ function LiveQueue() {
 
   const upVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
-    socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? 2 : 1});
+    socket.emit("vote", {
+      song: queueCopy[index].id,
+      change: switchVote ? 2 : 1,
+    });
     queueCopy[index].votes += switchVote ? 2 : 1;
     sortQueue(queueCopy);
   };
 
   const downVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
-    socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? -2 : -1});
+    socket.emit("vote", {
+      song: queueCopy[index].id,
+      change: switchVote ? -2 : -1,
+    });
     queueCopy[index].votes -= switchVote ? 2 : 1;
     sortQueue(queueCopy);
   };
@@ -129,11 +207,14 @@ function LiveQueue() {
 
   return (
     <div>
+      {JSON.stringify(isAdmin)}
       <div className="queue__header">
         <CurrentlyPlaying
           name={currentSong.name}
           artist={currentSong.artist}
           albumWorkURL={currentSong.albumWorkURL}
+          songProgress={songProgress}
+          songDuration={songDuration}
         />
       </div>
 
@@ -165,7 +246,11 @@ function LiveQueue() {
         autoHideDuration={4000}
         onClose={handleToastClose}
       >
-        <Alert onClose={handleToastClose} severity="error" sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleToastClose}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
           Song is already in the Queue
         </Alert>
       </Snackbar>
