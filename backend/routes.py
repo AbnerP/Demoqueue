@@ -9,7 +9,7 @@ from flask_login import login_required, logout_user, current_user, login_user
 from app import app, db, socketio
 from flask_socketio import emit
 from models import Host, Event, Song
-from spotify_client import get_user_playlists, get_playlist_songs, spotify_track, clientId
+from spotify_client import get_user_playlists, get_playlist_songs,get_currently_playing_song_status, spotify_track, clientId
 
 
 @app.route('/sign_out')
@@ -78,7 +78,7 @@ def create_event_queue():
         db.session.add(event)
         db.session.commit()
         for song in playlist_songs:
-            song_db_object = Song(spotify_id=song.id, name=song.name, artist=song.artist, rating=0, event_id=event.id)
+            song_db_object = Song(spotify_id=song.uri, name=song.name, artist=song.artist, rating=0, event_id=event.id)
             db.session.add(song_db_object)
         db.session.commit()
     except Exception as e:
@@ -95,7 +95,7 @@ def event_songs():
     except Exception as e:
         return {"error": str(e)}, 200
 
-    return {"songs": [{"name": song.name, "artist": song.artist, "id": song.id, "votes": song.rating} for song in songs]}
+    return {"songs": [{"name": song.name, "artist": song.artist, "id": song.id, "votes": song.rating,"spotify_id":song.spotify_id} for song in songs]}
 
 
 @socketio.on('vote')
