@@ -53,7 +53,7 @@ function LiveQueue() {
       name: "",
       artist: "",
       albumWorkURL:
-        "https://i1.sndcdn.com/artworks-PgABAqOMlwzHU78s-skGYBA-t500x500.jpg",
+        "https://static.vecteezy.com/system/resources/thumbnails/002/249/673/small/music-note-icon-song-melody-tune-flat-symbol-free-vector.jpg",
     });
   }, []);
 
