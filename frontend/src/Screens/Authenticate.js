@@ -32,7 +32,7 @@ function Authenticate(){
 
     function onSignup(event){
         event.preventDefault();
-        if(confirmPasswordInput !== passwordInput){
+        if(confirmPasswordInput !== signupPasswordInput){
             alert("Passwords do not match");
             return;
         }
@@ -43,7 +43,7 @@ function Authenticate(){
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({username: usernameInput, password: passwordInput})
+            body: JSON.stringify({username: signupUsernameInput, password: signupPasswordInput})
         };
         fetch('http://localhost:8082/sign_up', requestOptions).then(res => res.json()).then(data => {
             console.log(data);
