@@ -8,6 +8,8 @@ function Authenticate(){
     const navigate = useNavigate();
     const [usernameInput, setUsernameInput] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
+    const [signupUsernameInput, setSignupUsernameInput] = useState("");
+    const [signupPasswordInput, setSignupPasswordInput] = useState("");
     const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
 
     useEffect(() => {
@@ -70,8 +72,8 @@ function Authenticate(){
 
     let signUpForm = (
       <form className="auth_form" onSubmit={event => onSignup(event)}>
-        <input type="text" placeholder="Username" value={usernameInput} onChange={event => setUsernameInput(event.target.value)}/>
-        <input type="password" placeholder="Password" value={passwordInput} onChange={event => setPasswordInput(event.target.value)}/>
+        <input type="text" placeholder="Username" value={signupUsernameInput} onChange={event => setSignupUsernameInput(event.target.value)}/>
+        <input type="password" placeholder="Password" value={signupPasswordInput} onChange={event => setSignupPasswordInput(event.target.value)}/>
         <input type="password" placeholder="Confirm Password" value={confirmPasswordInput} onChange={event => setConfirmPasswordInput(event.target.value)}/>
         <button className="landingPage__button" type="submit">Sign Up</button>
       </form>
