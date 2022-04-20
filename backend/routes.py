@@ -15,6 +15,7 @@ from spotify_client import get_user_playlists, get_playlist_songs, spotify_track
 @app.route('/sign_out')
 @login_required
 def sign_out():
+    session.clear()
     logout_user()
     return {"success": True}, 200
 

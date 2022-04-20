@@ -8,7 +8,10 @@ class Host(UserMixin, db.Model):
     username = db.Column(db.String(64), nullable=False,
                          unique=True, index=True)
     password_hash = db.Column(db.String(128))
-
+    events = db.relationship("Event", backref="song")
+    spotify_access_token = db.Column(db.String(255))
+    spotify_access_expires = db.Column(db.DateTime)
+    spotify_refresh_token = db.Column(db.String(255))
 
     @property
     def password(self):
@@ -30,6 +33,7 @@ class Event(db.Model):
     spotify_id = db.Column(db.String(64), nullable=True)
     name = db.Column(db.String(64), nullable=False, unique=True)
     songs = db.relationship("Song", backref="event")
+    host_id = db.Column(db.Integer, db.ForeignKey('host.id'))
 
     def __repr__(self):
         return '<Event %r>' % self.id

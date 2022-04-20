@@ -2,10 +2,11 @@ import datetime
 import json
 
 from flask import redirect, session, request
+from flask_login import current_user
 from pip._vendor import requests
 
-from app import app
-
+from app import app, db
+from models import Host
 
 clientId = "09be4ea5badf462fbe63a505c183c04d"
 clientSecret = "83243ddb2d5c44ebaef3ff58b233982b"
@@ -52,10 +53,20 @@ def api_callback():
     refresh_token = response_data["refresh_token"]
     token_type = response_data["token_type"]
     expires_in = response_data["expires_in"]
+    expires = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
 
     session["spotify_token"] = access_token
     session["spotify_refresh_token"] = refresh_token
-    session["spotify_token_expires"] = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
+    session["spotify_token_expires"] = expires
+
+    try:
+        current_user.spotify_access_token = access_token
+        current_user.spotify_access_expires = expires
+        current_user.spotify_refresh_token = refresh_token
+        db.session.add(current_user)
+        db.session.commit()
+    except Exception as e:
+        return {"error": e}
 
     return redirect("http://localhost:3000/create_event")
 
