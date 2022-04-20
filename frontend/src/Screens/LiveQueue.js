@@ -8,20 +8,36 @@ import sortAndReturnNumerically, {
   sortAndReturnAlphabetically
 } from "../Helpers/sort";
 import "./LiveQueue.css";
+import io from "socket.io-client";
+
+let socket = io.connect("http://localhost:8082");
 
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
+  const queueRef = React.useRef(songsInQueue);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sortedByRank, setSortedByRank] = useState(true);
   const [toastOpen, setToastOpen] = useState(false);
-
   const handleToastOpen = () => setToastOpen(true);
   const handleToastClose = (event,reason) => {
     if(reason === 'clickaway') return ;
-
     setToastOpen(false);
   };
+
+  useEffect(() => {
+    queueRef.current = songsInQueue;
+  });
+
+  useEffect(() => {
+    socket.on("send_vote", vote => {
+      console.log('useEffect on send vote');
+      let queueCopy = [...queueRef.current];
+      const idx = queueCopy.findIndex(song => song.id === vote.song);
+      queueCopy[idx].votes += vote.change;
+      sortQueue(queueCopy);
+    });
+  }, []);
 
   useEffect(() => {
     setCurrentSong({
@@ -37,9 +53,6 @@ function LiveQueue() {
   }, [sortedByRank]);
 
   useEffect(() => {
-    if(songsInQueue.length > 0){
-      return;
-    }
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let event_name = params.get('event_name');
@@ -51,16 +64,19 @@ function LiveQueue() {
         'Accept': 'application/json'
       }
     };
-        fetch('http://localhost:8082/event_songs?event_name='+event_name, requestOptions).then(res => res.json()).then(data => {
-          console.log(data);
-          let song_list = [...songsInQueue]
-          data.songs.forEach(song => {
-            song_list.push({name: song.name, artist: song.artist, votes: 0});
-          });
-          console.log(song_list);
-          sortQueue(song_list)
-        });
-  })
+    fetch('http://localhost:8082/event_songs?event_name='+event_name, requestOptions).then(res => res.json()).then(data => {
+      console.log("Got all songs from API", data.songs);
+      let song_list = [...songsInQueue]
+      data.songs.forEach(song => {
+        song_list.push({name: song.name, artist: song.artist, id: song.id, votes: song.votes});
+      });
+      sortQueue(song_list)
+    });
+  }, [])
+
+  const updateCurrentlyPlaying = () => {
+
+  }
 
   const sortQueue = (queue) => {
     if (sortedByRank) {
@@ -89,25 +105,21 @@ function LiveQueue() {
 
   const upVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
-
+    socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? 2 : 1});
     queueCopy[index].votes += switchVote ? 2 : 1;
-
     sortQueue(queueCopy);
   };
 
   const downVote = (index, switchVote) => {
     let queueCopy = [...songsInQueue];
-
+    socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? -2 : -1});
     queueCopy[index].votes -= switchVote ? 2 : 1;
-
     sortQueue(queueCopy);
   };
 
   const deleteSuggestion = (index) => {
     let queueCopy = [...songsInQueue];
-
     queueCopy.splice(index, 1);
-
     sortQueue(queueCopy);
   };
 
@@ -137,6 +149,7 @@ function LiveQueue() {
             key={`${song.name} ${song.artist}`}
             isAdmin={isAdmin}
             name={song.name}
+            id={song.id}
             artist={song.artist}
             votes={song.votes}
             index={index}

@@ -5,6 +5,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_cors import CORS
+from flask_socketio import SocketIO
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -19,6 +20,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 cors = CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
+socketio.run(app)
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
