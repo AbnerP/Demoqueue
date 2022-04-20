@@ -4,37 +4,24 @@ import {useEffect, useState} from 'react';
 import "./SessionCode.css"
 
 function SessionCode(props) {
-  const id = props.id;
-  const [temp, setTemp] = useState("");
-  const [url, setUrl] = useState("https://www.google.com/");
   const [size] = useState(400);
   const [qrCode, setQrCode] = useState("");
+  let search = window.location.search;
+  let params = new URLSearchParams(search);
+  let event_name = params.get('event_name');
+  const baseURL = "http://localhost:3000"
 
   useEffect(() => {
+      const eventURL = baseURL + event_name
     setQrCode
- (`http://api.qrserver.com/v1/create-qr-code/?data=${url}!&size=${size}x${size}`);
-  }, [url, size]);
-
-  function handleClick() {
-    setUrl(temp);
-  }
+ (`http://api.qrserver.com/v1/create-qr-code/?data=${eventURL}!&size=${size}x${size}`);
+  }, [size]);
 
   const navigate = useNavigate();
   return (
     <div className='main'>
       <h1>Current Session Code</h1>
-      <button onClick={() => navigate("/queue")}>Back</button>
-      <div className="input-box">
-        <div className="gen">
-          <input type="text" onChange={
-            (e) => {setTemp(e.target.value)}}
-            placeholder="Enter queue #" />
-          <button className="button" 
-            onClick={handleClick}>
-            Generate
-          </button>
-        </div>
-      </div>
+      <button onClick={() => navigate("/queue?event_name="+event_name)}>Back</button>
       <div className="output-box">
         <img src={qrCode} alt="" />
         <a href={qrCode} download="QRCode">

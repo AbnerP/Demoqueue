@@ -30,7 +30,7 @@ function CurrentlyPlaying(props) {
 
       <div className="currentlyPlaying__lockTimer">
         {/* <h4 className="lockTimer">Song Locks in {timeToLock}s</h4> */}
-        <ShowQRCodeButton />
+        <ShowQRCodeButton eventName={props.eventName}/>
       </div>
     </div>
   );
