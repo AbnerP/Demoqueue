@@ -38,6 +38,7 @@ function LandingPage() {
       <br /><h3> OR </h3><br />
       <button className="landingPage__button" onClick={() => navigate("/authenticate")}>Create Queue</button>
         <br />
+      <button className="landingPage__button" onClick={logout}>Log Out</button>
     </div>
   );
 }

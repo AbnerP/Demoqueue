@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 cors = CORS(app)
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
 socketio.run(app)
 
