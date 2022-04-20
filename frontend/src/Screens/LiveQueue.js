@@ -24,6 +24,9 @@ function LiveQueue() {
     if(reason === 'clickaway') return ;
     setToastOpen(false);
   };
+  let search = window.location.search;
+  let params = new URLSearchParams(search);
+  let event_name = params.get('event_name');
 
   useEffect(() => {
     queueRef.current = songsInQueue;
@@ -53,9 +56,6 @@ function LiveQueue() {
   }, [sortedByRank]);
 
   useEffect(() => {
-    let search = window.location.search;
-    let params = new URLSearchParams(search);
-    let event_name = params.get('event_name');
     const requestOptions = {
       method: 'GET',
       credentials: 'include',
@@ -134,6 +134,7 @@ function LiveQueue() {
           name={currentSong.name}
           artist={currentSong.artist}
           albumWorkURL={currentSong.albumWorkURL}
+          eventName={event_name}
         />
       </div>
 

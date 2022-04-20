@@ -3,7 +3,7 @@ import React from "react";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import { useNavigate } from "react-router-dom";
 
-function ShowQRCodeButton() {
+function ShowQRCodeButton(props) {
   const navigate = useNavigate();
   return (
     <IconButton
@@ -12,7 +12,7 @@ function ShowQRCodeButton() {
         color: "#4CAF50",
         transform: "scale(1.2)",
       }}
-      onClick={() => navigate("/code")}
+      onClick={() => navigate("/code?event_name="+props.eventName)}
     >
       <QrCodeIcon />
     </IconButton>
