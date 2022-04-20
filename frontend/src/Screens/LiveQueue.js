@@ -11,11 +11,11 @@ import "./LiveQueue.css";
 import io from "socket.io-client";
 
 let socket = io.connect("http://localhost:8082");
-let first_load = true;
 
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
   const [songsInQueue, setSongsInQueue] = useState([]);
+  const queueRef = React.useRef(songsInQueue);
   const [isAdmin, setIsAdmin] = useState(false);
   const [sortedByRank, setSortedByRank] = useState(true);
   const [toastOpen, setToastOpen] = useState(false);
@@ -26,13 +26,18 @@ function LiveQueue() {
   };
 
   useEffect(() => {
+    queueRef.current = songsInQueue;
+  });
+
+  useEffect(() => {
     socket.on("send_vote", vote => {
       console.log('useEffect on send vote');
-      first_load = false;
-      // sets list to empty to trigger component reload + API call tp get updated songs
-      setSongsInQueue([]);
+      let queueCopy = [...queueRef.current];
+      const idx = queueCopy.findIndex(song => song.id === vote.song);
+      queueCopy[idx].votes += vote.change;
+      sortQueue(queueCopy);
     });
-  }, [first_load]);
+  }, []);
 
   useEffect(() => {
     setCurrentSong({
@@ -101,7 +106,6 @@ function LiveQueue() {
   };
 
   const upVote = (index, switchVote) => {
-    console.log("emitting upvote");
     let queueCopy = [...songsInQueue];
     socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? 2 : 1});
     queueCopy[index].votes += switchVote ? 2 : 1;
@@ -109,7 +113,6 @@ function LiveQueue() {
   };
 
   const downVote = (index, switchVote) => {
-    console.log("emitting downvote");
     let queueCopy = [...songsInQueue];
     socket.emit("vote", {"song": queueCopy[index].id,  "change": switchVote ? -2 : -1});
     queueCopy[index].votes -= switchVote ? 2 : 1;
