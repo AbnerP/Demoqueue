@@ -33,35 +33,8 @@ function LiveQueue() {
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let event_name = params.get("event_name");
-
-  useEffect(() => {
-    queueRef.current = songsInQueue;
-  });
-
-  useEffect(() => {
-    socket.on("send_vote", (vote) => {
-      console.log("useEffect on send vote");
-      let queueCopy = [...queueRef.current];
-      const idx = queueCopy.findIndex((song) => song.id === vote.song);
-      queueCopy[idx].votes += vote.change;
-      sortQueue(queueCopy);
-    });
-  }, []);
-
-  useEffect(() => {
-    setCurrentSong({
-      name: "",
-      artist: "",
-      albumWorkURL:
-        "https://static.vecteezy.com/system/resources/thumbnails/002/249/673/small/music-note-icon-song-melody-tune-flat-symbol-free-vector.jpg",
-    });
-  }, []);
-
-  useEffect(() => {
-    sortQueue([...songsInQueue]);
-  }, [sortedByRank]);
-
-  useEffect(() => {
+  
+  const loadPlaylistSongs = () =>{
     const requestOptions = {
       method: "GET",
       credentials: "include",
@@ -89,62 +62,59 @@ function LiveQueue() {
         });
         sortQueue(song_list);
       });
-  }, []);
+  };
 
-  useEffect(() => {
-    const getCurrentlyPlayingSong = async () => {
-      let requestOptions = {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      };
-      fetch("http://localhost:8082/currently_playing", requestOptions)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.no_playback) {
-            console.log("no playback");
-          } else {
-            setSongProgress(data.progress_ms / 1000);
-            setSongDuration(data.item.duration_ms / 1000);
-            setInterval(() => {
-              setSongProgress((seconds) => seconds + 1);
-            }, 1000);
-            setTimeout(() => {
-              console.log("add to queue");
-              if (isAdmin) {
-                console.log("admin adding song to queue");
-                requestOptions.method = "POST";
-                requestOptions.withCredentials = true;
-                let queue = [...queueRef.current];
-                queue = sortAndReturnNumerically(queue);
-
-                console.log("adding", queue[0]);
-                axios
-                  .post(
-                    "http://localhost:8082/add_song_to_queue",
-                    { spotify_uri: queue[0].spotify_id },
-                    requestOptions
-                  )
-                  .then((res) => console.log(res.data));
-              }
-            }, data.item.duration_ms - data.progress_ms - 30 * 1000);
-            setTimeout(() => {
-              console.log("song ended");
-              window.location.reload();
-            }, data.item.duration_ms - data.progress_ms - 2000);
-            updateCurrentlyPlaying(
-              data.item.name,
-              data.item.artists[0].name,
-              data.item.album.images[0].url
-            );
-          }
-        });
+  const getCurrentlyPlayingSong = async () => {
+    let requestOptions = {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
     };
-    getCurrentlyPlayingSong();
-  }, []);
+    fetch("http://localhost:8082/currently_playing", requestOptions)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.no_playback) {
+          console.log("no playback");
+        } else {
+          setSongProgress(data.progress_ms / 1000);
+          setSongDuration(data.item.duration_ms / 1000);
+          setInterval(() => {
+            setSongProgress((seconds) => seconds + 1);
+          }, 1000);
+          setTimeout(() => {
+            console.log("add to queue");
+            if (isAdmin) {
+              console.log("admin adding song to queue");
+              requestOptions.method = "POST";
+              requestOptions.withCredentials = true;
+              let queue = [...queueRef.current];
+              queue = sortAndReturnNumerically(queue);
+
+              console.log("adding", queue[0]);
+              axios
+                .post(
+                  "http://localhost:8082/add_song_to_queue",
+                  { spotify_uri: queue[0].spotify_id },
+                  requestOptions
+                )
+                .then((res) => console.log(res.data));
+            }
+          }, data.item.duration_ms - data.progress_ms - 30 * 1000);
+          setTimeout(() => {
+            console.log("song ended");
+            window.location.reload();
+          }, data.item.duration_ms - data.progress_ms - 2000);
+          updateCurrentlyPlaying(
+            data.item.name,
+            data.item.artists[0].name,
+            data.item.album.images[0].url
+          );
+        }
+      });
+  };
 
   const updateCurrentlyPlaying = (name, artist, imageURL) => {
     setCurrentSong({
@@ -212,6 +182,34 @@ function LiveQueue() {
   const toggleSortType = () => {
     setSortedByRank(!sortedByRank);
   };
+
+  useEffect(() => {
+    queueRef.current = songsInQueue;
+  });
+
+  useEffect(() => {
+    sortQueue([...songsInQueue]);
+  }, [sortedByRank]);
+
+  useEffect(() => {
+    socket.on("send_vote", (vote) => {
+      console.log("useEffect on send vote");
+      let queueCopy = [...queueRef.current];
+      const idx = queueCopy.findIndex((song) => song.id === vote.song);
+      queueCopy[idx].votes += vote.change;
+      sortQueue(queueCopy);
+    });
+    setCurrentSong({
+      name: "",
+      artist: "",
+      albumWorkURL:
+        "https://static.vecteezy.com/system/resources/thumbnails/002/249/673/small/music-note-icon-song-melody-tune-flat-symbol-free-vector.jpg",
+    });
+    getCurrentlyPlayingSong();
+    // loadPlaylistSongs();
+  }, []);
+
+
 
   return (
     <div>
