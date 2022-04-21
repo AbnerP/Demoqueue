@@ -1,21 +1,48 @@
 import { Box, Button, IconButton, Modal, Typography } from "@material-ui/core";
 import { Add, Close, Sort } from "@material-ui/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { sampleSongData } from "../../Helpers/data";
+
 import "./QueueOptions.css";
 
 function QueueOptions(props) {
+
   const [addSongsOpen, setAddSongsOpen] = useState(false);
+  const [inputText, setInputText] = useState("");
+  const [songList, setSongList] = useState([])
   const handleOpen = () => setAddSongsOpen(true);
   const handleClose = () => setAddSongsOpen(false);
-  const [inputText, setInputText] = useState("");
-
+  
   const inputHandler = (e) => {
     let lowerCase = e.target.value.toLowerCase();
     setInputText(lowerCase);
   };
 
-  const filteredData = sampleSongData.filter((song) => {
+  useEffect(() => {
+    const requestOptions = {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    };
+    fetch(
+      "http://localhost:8082/event_songs?event_name=" + props.event_name,
+      requestOptions
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log("Got all songs from API", data.songs);
+        // console.log(data.songs[0]);
+        console.log(data.songs);
+        setSongList(data.songs);
+      });
+  }, [])
+  
+
+  const filteredData = songList.filter((song) => {
     if (inputText === "") return song;
 
     return (
@@ -61,7 +88,7 @@ function QueueOptions(props) {
               <Box
                 key={song.name}
                 onClick={() => {
-                  props.addSongToQueue(song.name, song.artist);
+                  props.addSongToQueue(song.name, song.artist,song);
                   handleClose();
                 }}
                 style={containerStyle}

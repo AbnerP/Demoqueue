@@ -33,8 +33,8 @@ function LiveQueue() {
   let search = window.location.search;
   let params = new URLSearchParams(search);
   let event_name = params.get("event_name");
-  
-  const loadPlaylistSongs = () =>{
+
+  const loadPlaylistSongs = () => {
     const requestOptions = {
       method: "GET",
       credentials: "include",
@@ -132,23 +132,15 @@ function LiveQueue() {
     }
   };
 
-  const addSongToQueue = (name, artist) => {
-    if (
-      songsInQueue.filter(
-        (song) => song.name === name && song.artist === artist
-      ).length > 0
-    ) {
+  const addSongToQueue = (name, artist,songObject) => {
+    if (songsInQueue.filter((song) => song.name === name && song.artist === artist).length > 0) {
       handleToastOpen();
       return;
     }
 
     let queueCopy = [...songsInQueue];
 
-    queueCopy.unshift({
-      name: name,
-      artist: artist,
-      votes: 1,
-    });
+    queueCopy.unshift(songObject);
 
     sortQueue(queueCopy);
   };
@@ -209,8 +201,6 @@ function LiveQueue() {
     // loadPlaylistSongs();
   }, []);
 
-
-
   return (
     <div>
       <div className="queue__header">
@@ -228,6 +218,7 @@ function LiveQueue() {
         sortedByRank={sortedByRank}
         toggleSortType={toggleSortType}
         addSongToQueue={addSongToQueue}
+        event_name={event_name}
       />
 
       <div className="song__queue">
