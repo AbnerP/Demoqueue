@@ -39,7 +39,7 @@ def login():
 
             spotify_auth = False
             auth_endpoint = "https://accounts.spotify.com/authorize"
-            redirect_uri = "http://localhost:8082/spotify_webhook"
+            redirect_uri = "https://demoqueue-server.herokuapp.com/spotify_webhook"
 
             scopes = [
                 "user-read-currently-playing",
