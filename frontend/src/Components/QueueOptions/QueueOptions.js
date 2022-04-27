@@ -29,7 +29,7 @@ function QueueOptions(props) {
       },
     };
     fetch(
-      "http://localhost:8082/event_songs?event_name=" + props.event_name,
+      "https://demoqueue-server.herokuapp.com/event_songs?event_name=" + props.event_name,
       requestOptions
     )
       .then((res) => res.json())

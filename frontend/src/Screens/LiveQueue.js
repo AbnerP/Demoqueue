@@ -11,7 +11,7 @@ import "./LiveQueue.css";
 import io from "socket.io-client";
 import axios from "axios";
 
-let socket = io.connect("http://localhost:8082");
+let socket = io.connect("https://demoqueue-server.herokuapp.com");
 
 function LiveQueue() {
   const [currentSong, setCurrentSong] = useState({});
@@ -44,7 +44,8 @@ function LiveQueue() {
       },
     };
     fetch(
-      "http://localhost:8082/event_songs?event_name=" + event_name,
+      "https://demoqueue-server.herokuapp.com/event_songs?event_name=" +
+        event_name,
       requestOptions
     )
       .then((res) => res.json())
@@ -73,7 +74,10 @@ function LiveQueue() {
         Accept: "application/json",
       },
     };
-    fetch("http://localhost:8082/currently_playing", requestOptions)
+    fetch(
+      "https://demoqueue-server.herokuapp.com/currently_playing",
+      requestOptions
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.no_playback) {
@@ -96,7 +100,7 @@ function LiveQueue() {
               console.log("adding", queue[0]);
               axios
                 .post(
-                  "http://localhost:8082/add_song_to_queue",
+                  "https://demoqueue-server.herokuapp.com/add_song_to_queue",
                   { spotify_uri: queue[0].spotify_id },
                   requestOptions
                 )
@@ -132,8 +136,12 @@ function LiveQueue() {
     }
   };
 
-  const addSongToQueue = (name, artist,songObject) => {
-    if (songsInQueue.filter((song) => song.name === name && song.artist === artist).length > 0) {
+  const addSongToQueue = (name, artist, songObject) => {
+    if (
+      songsInQueue.filter(
+        (song) => song.name === name && song.artist === artist
+      ).length > 0
+    ) {
       handleToastOpen();
       return;
     }
