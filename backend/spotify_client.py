@@ -42,7 +42,7 @@ def api_callback():
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": "http://localhost:8082/spotify_webhook",
+        "redirect_uri": "https://demoqueue-server.herokuapp.com/spotify_webhook",
         'client_id': clientId,
         'client_secret': clientSecret,
     }
@@ -58,7 +58,7 @@ def api_callback():
     session["spotify_refresh_token"] = refresh_token
     session["spotify_token_expires"] = datetime.datetime.now() + datetime.timedelta(seconds=int(expires_in))
 
-    return redirect("http://localhost:3000/create_event")
+    return redirect("https://demoqueue-14b36.web.app/create_event")
 
 @app.route('/host_spotify_playlists', methods=['GET'])
 def get_user_playlists():

@@ -10,7 +10,7 @@ from flask_socketio import SocketIO
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__, static_url_path='', static_folder='./../front-end/src')
+app = Flask(__name__, static_url_path='')
 
 app.config['SECRET_KEY'] = 'sadfsadfsadfadsfsafgr'
 app.config['SQLALCHEMY_DATABASE_URI'] =\
@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 cors = CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
+socketio = SocketIO(app, cors_allowed_origins="https://demoqueue-14b36.web.app")
 socketio.run(app)
 
 login_manager = LoginManager()
@@ -39,7 +39,7 @@ def load_user(user_id):
 # Fixes CORS issue to allow for credentials to be sent from front end
 @app.after_request
 def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+  response.headers.add('Access-Control-Allow-Origin', 'https://demoqueue-14b36.web.app')
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
   response.headers.add('Access-Control-Allow-Credentials', 'true')
